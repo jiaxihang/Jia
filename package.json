@@ -1,0 +1,32 @@
+{
+  "name": "elegant-animated-personal-blog",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "浮光掠影 · 优雅动效个人博客",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:single": "cross-env SINGLE_FILE=true vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "clsx": "2.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-router-dom": "^7.13.1",
+    "tailwind-merge": "3.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.1.17",
+    "@types/node": "^22.0.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.1",
+    "cross-env": "^10.1.0",
+    "tailwindcss": "4.1.17",
+    "typescript": "5.9.3",
+    "vite": "7.2.4",
+    "vite-plugin-singlefile": "2.3.0"
+  }
+}
