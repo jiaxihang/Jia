@@ -27,12 +27,12 @@ export interface Column {
 
 export const columns: Column[] = [
   {
-    id: "tech",
-    title: "技术专栏",
-    subtitle: "Tech Column",
+    id: "game",
+    title: "游戏专栏",
+    subtitle: "Game Column",
     emoji: "⚡",
-    description: "从 React 到 TypeScript，从前端工程到设计系统。",
-    intro: "这里记录技术探索路上的思考与沉淀。不追求大而全，只记录真正有启发的实践与反思。每一篇都是对某个具体问题的深入思考，希望能给同路人一些参考。",
+    description: "游戏推荐。",
+    intro: "优秀的游戏进行模拟世界，完成个人未实现的幻想体验，并且强化自身的英雄主义，对动机强化有帮助，开设专栏记录游戏世界。",
     accent: "cyan",
   },
   {
@@ -59,30 +59,56 @@ export const columns: Column[] = [
 export const columnEntries: ColumnEntry[] = [
   {
     id: "ce1",
-    columnId: "tech",
-    title: "React 组件设计心法",
-    subtitle: "可复用与可维护的平衡",
-    date: "2024年12月",
+    columnId: "game",
+    title: "待玩游戏清单",
+    subtitle: "即可享受的大作与爽感游戏",
+    date: "2026年3月",
     excerpt: "组件不是越细越好，关键在于边界的划分与职责的清晰。",
-    content: `## 组件的边界
+    content: `
+    
+## 失落迷城 群星的诅咒
 
-一个好的组件，应该像一首诗——有明确的起承转合，不拖泥带水。
+> 国产的类魂游戏，动漫风格
 
-> 组件的职责单一，但表达可以丰富。
+## 第一狂战士 卡赞
 
-## 可复用的本质
+> 爽感类魂游戏，动漫风格
 
-复用不是复制粘贴，而是抽象出稳定的接口，让变化的部分留在外部。
+## 逐鹿汉末
 
-## 写在最后
+> 策略的三国背景游戏
 
-设计组件，其实是在设计一种沟通方式。`,
+## 四海兄弟 故乡
+
+> 四海兄弟的新作品，刷系列跟的游戏
+
+## 末日危城 希望
+
+> 丧尸2.5D俯视角，画风不错，玩法有点像暗黑
+
+## 无主之地4
+
+> 玩过无主之地3，游戏的第一人称射击刷子游戏，优秀
+
+## 阿凡达 潘多拉边境
+
+> 育碧的阿凡达作品，值得体验
+
+## 生化危机9 安魂曲
+
+> 生化危机新作，必玩作品
+
+## 毁灭战士 黑暗时代
+
+> 爽感游戏，值得体验
+
+`,
     emoji: "⚡",
   },
   {
     id: "ce2",
-    columnId: "tech",
-    title: "TypeScript 类型设计实践",
+    columnId: "game",
+    title: "已玩游戏简评",
     subtitle: "从 any 到精确表达",
     date: "2024年11月",
     excerpt: "类型系统是文档，也是约束。用好它，代码会自我解释。",

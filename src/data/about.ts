@@ -1,8 +1,8 @@
 export const profile = {
   name: "浮光掠影",
-  title: "前端开发者 · 技术写作者",
+  title: "观察 · 诗意 · 产能 · 技术",
   tagline: "以文字记录时光，用代码编织梦想",
-  location: "中国 · 某城",
+  location: "中国 · 武汉",
   status: "正在寻找灵感",
   avatar: "🌊",
   bio: [

@@ -67,4 +67,12 @@ export const reflections: Reflection[] = [
     mood: "🍃",
     location: "成都",
   },
+  {
+    id: "r8",
+    date: "2025-02-27",
+    content: "每个人的故事都值得去记录。",
+    mood: "💌",
+    location: "武汉",
+  },
+
 ];
