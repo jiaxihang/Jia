@@ -4,7 +4,6 @@ export const profile = {
   tagline: "以文字记录时光，用代码编织梦想",
   location: "中国 · 武汉",
   status: "正在寻找灵感",
-  avatar: "🌊",
   bio: [
     "你好，欢迎来到我的Blog。我是一名热爱技术与思想的开发者，喜欢在代码与文字之间寻找平衡。",
     "这里是我记录灵感、分享故事、书写生活的地方。每一篇文章都是一次与自己对话的旅程，希望这些文字也能给你带来一些启发或共鸣。",
@@ -23,25 +22,16 @@ export const experiences = [
   {
     period: "2025 — 至今",
     role: "博士生在读",
-    company: "华中农业大学",
+    company: "武汉",
     description: "利用人工智能计算机视觉算法对畜牧领域进行工程化实践。",
     tags: ["计算机视觉", "人工智能"],
   },
   {
     period: "2023 — 2025",
     role: "硕士阶段",
-    company: "华中农业大学",
+    company: "武汉",
     description: "接触科研，进行系统化学习，沉淀，走向深刻思考。",
     tags: ["独立思考", "逻辑学习"],
-  },
-];
-
-export const education = [
-  {
-    period: "2019 — 2023",
-    degree: "本科阶段",
-    school: "福建农林大学",
-    description: "本科阶段的自由成长，进行基础的成长和学习。",
   },
 ];
 

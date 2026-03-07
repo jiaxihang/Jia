@@ -47,8 +47,8 @@ export function BlogList({ onSelectPost }: BlogListProps) {
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-5 py-2 text-sm font-sans rounded-full transition-all duration-400 ${activeCategory === cat
-                  ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-200"
-                  : "text-slate-500 hover:text-cyan-600 bg-white/50 border border-cyan-100/50 hover:border-cyan-200"
+                ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-200 dark:shadow-slate-900/50"
+                : "text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 bg-white/50 dark:bg-slate-800/50 border border-cyan-100/50 dark:border-slate-700/50 hover:border-cyan-200 dark:hover:border-slate-600"
                 }`}
             >
               {cat}
