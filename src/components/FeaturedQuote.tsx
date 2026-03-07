@@ -5,9 +5,12 @@ export function FeaturedQuote() {
 
   return (
     <section className="relative py-24 px-6 overflow-hidden">
+      {/* Seamless background transition gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-50/20 via-cyan-50/10 to-transparent dark:from-slate-900/30 dark:via-slate-900/15 dark:to-transparent pointer-events-none" />
+
       {/* Background ink wash effect */}
       <div className="absolute inset-0 ink-wash" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-100/8 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-cyan-100/8 rounded-full blur-3xl" />
 
       <div ref={ref} className="relative max-w-3xl mx-auto text-center">
         <div className={`${isInView ? "animate-fade-in-up" : "opacity-0"}`}>

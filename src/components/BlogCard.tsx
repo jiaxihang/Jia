@@ -1,4 +1,4 @@
-import { useInView } from "@/hooks/useInView";
+import { motion } from "framer-motion";
 import type { BlogPost } from "@/data/posts";
 
 interface BlogCardProps {
@@ -8,17 +8,26 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post, index, onClick }: BlogCardProps) {
-  const { ref, isInView } = useInView(0.1);
-
   return (
-    <div
-      ref={ref}
-      className={`opacity-0 ${isInView ? "animate-fade-in-up" : ""}`}
-      style={{ animationDelay: `${index * 0.15}s` }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 100,
+          damping: 15,
+          delay: index * 0.15
+        }
+      }}
+      viewport={{ once: true, margin: "-50px" }}
     >
-      <article
+      <motion.article
         onClick={onClick}
         className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:shadow-xl hover:shadow-cyan-100/40 dark:hover:shadow-slate-900/40 hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5"
+        whileHover={{ y: -2 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         {/* Cover area with emoji */}
         <div className="relative h-48 bg-gradient-to-br from-cyan-50/90 via-teal-50/80 to-cyan-100/40 dark:from-slate-700/90 dark:via-slate-700/80 dark:to-slate-600/40 flex items-center justify-center overflow-hidden">
@@ -26,9 +35,13 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
             <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-cyan-200/40 dark:bg-slate-600/40 blur-xl" />
             <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-teal-200/40 dark:bg-slate-500/40 blur-xl" />
           </div>
-          <span className="text-6xl group-hover:scale-110 transition-transform duration-700 drop-shadow-sm relative z-10">
+          <motion.span
+            className="text-6xl drop-shadow-sm relative z-10"
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
             {post.coverEmoji}
-          </span>
+          </motion.span>
           {/* Category badge */}
           <span className="absolute top-4 left-4 px-3 py-1 text-xs font-sans tracking-wider text-cyan-700 dark:text-cyan-300 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full border border-cyan-100 dark:border-slate-700">
             {post.category}
@@ -65,14 +78,26 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
           </div>
 
           {/* Read more indicator */}
-          <div className="mt-4 flex items-center gap-2 text-cyan-500 dark:text-cyan-400 text-sm font-sans opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-500">
+          <motion.div
+            className="mt-4 flex items-center gap-2 text-cyan-500 dark:text-cyan-400 text-sm font-sans"
+            initial={{ opacity: 0, x: -10 }}
+            whileHover={{ opacity: 1, x: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
             <span>阅读全文</span>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <motion.svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              whileHover={{ x: 2 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </div>
+            </motion.svg>
+          </motion.div>
         </div>
-      </article>
-    </div>
+      </motion.article>
+    </motion.div>
   );
 }
