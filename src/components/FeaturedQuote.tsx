@@ -43,7 +43,7 @@ export function FeaturedQuote() {
           {/* Stats */}
           <div className="flex items-center justify-center gap-12 mt-12">
             {[
-              { number: "6", label: "篇文章" },
+              { number: "200＋", label: "篇文章" },
               { number: "∞", label: "杯咖啡" },
               { number: "365", label: "天热爱" },
             ].map((stat, index) => (

@@ -29,7 +29,7 @@ export function Reflections() {
               Daily
             </span>
             <h2 className="font-serif text-3xl md:text-4xl text-cyan-900 dark:text-cyan-100 mb-4">
-              每日感悟
+              感悟
             </h2>
             <div className="divider-ornament max-w-xs mx-auto">
               <span className="text-cyan-300 text-lg">✦</span>

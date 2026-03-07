@@ -35,7 +35,7 @@ export function BlogList({ onSelectPost }: BlogListProps) {
               <span className="text-cyan-300 text-lg">✦</span>
             </div>
             <p className="mt-6 text-slate-500 font-sans text-sm max-w-xl mx-auto">
-              零散随笔与独立文章
+              独立文章
             </p>
           </div>
         </div>
@@ -46,11 +46,10 @@ export function BlogList({ onSelectPost }: BlogListProps) {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 text-sm font-sans rounded-full transition-all duration-400 ${
-                activeCategory === cat
+              className={`px-5 py-2 text-sm font-sans rounded-full transition-all duration-400 ${activeCategory === cat
                   ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-200"
                   : "text-slate-500 hover:text-cyan-600 bg-white/50 border border-cyan-100/50 hover:border-cyan-200"
-              }`}
+                }`}
             >
               {cat}
             </button>

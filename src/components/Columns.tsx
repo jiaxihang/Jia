@@ -146,8 +146,8 @@ function ColumnCard({
               <span className="text-xs text-slate-400 font-sans tracking-wider block mb-3">
                 专栏内容
               </span>
-              <ul className="space-y-2">
-                {entries.slice(0, 4).map((entry) => (
+              <ul className="space-y-2 max-h-46 overflow-y-auto">
+                {entries.map((entry) => (
                   <li key={entry.id}>
                     <button
                       onClick={() => onSelectEntry?.(column.id, entry.id)}
@@ -177,7 +177,7 @@ function ColumnCard({
                   </li>
                 ))}
               </ul>
-              {entries.length > 4 && (
+              {entries.length > 3 && (
                 <p className="text-xs text-slate-400 mt-2">
                   共 {entries.length} 篇
                 </p>

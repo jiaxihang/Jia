@@ -65,9 +65,8 @@ export function Hero({ onNavigate }: HeroProps) {
           <p className="font-serif text-lg md:text-xl text-slate-500 dark:text-slate-400 tracking-wider">
             {typedText}
             <span
-              className={`inline-block w-0.5 h-5 bg-cyan-500 ml-1 align-middle transition-opacity duration-100 ${
-                showCursor ? "opacity-100" : "opacity-0"
-              }`}
+              className={`inline-block w-0.5 h-5 bg-cyan-500 ml-1 align-middle transition-opacity duration-100 ${showCursor ? "opacity-100" : "opacity-0"
+                }`}
             />
           </p>
         </div>
@@ -94,15 +93,7 @@ export function Hero({ onNavigate }: HeroProps) {
           </button>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-fade-in" style={{ animationDelay: "1.5s", opacity: 0 }}>
-          <div className="flex flex-col items-center gap-2 text-cyan-400/50">
-            <span className="text-xs tracking-widest">SCROLL</span>
-            <div className="w-5 h-8 rounded-full border border-cyan-300/30 flex items-start justify-center p-1">
-              <div className="w-1 h-2 bg-cyan-400/50 rounded-full animate-bounce" />
-            </div>
-          </div>
-        </div>
+
       </div>
     </section>
   );

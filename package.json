@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "浮光掠影 · 优雅动效个人博客",
+  "description": "浮光掠影 · 个人博客",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
