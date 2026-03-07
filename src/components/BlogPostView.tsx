@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { posts } from "@/data/posts";
 import { parseMarkdown } from "@/utils/markdown";
-import { GiscusComments } from "./GiscusComments";
 
 interface BlogPostViewProps {
   postId: number;
@@ -148,9 +147,6 @@ export function BlogPostView({
             <div />
           )}
         </div>
-
-        {/* Giscus Comments */}
-        <GiscusComments />
       </div>
     </section>
   );

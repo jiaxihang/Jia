@@ -76,7 +76,6 @@ export function Reflections() {
 
 function ReflectionItem({
   reflection,
-  index,
 }: {
   reflection: (typeof reflections)[0];
   index: number;

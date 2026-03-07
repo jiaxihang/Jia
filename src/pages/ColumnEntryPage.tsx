@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { ColumnEntryView } from "@/components/ColumnEntryView";
 import { SITE } from "@/config/site";
 import { columnEntries } from "@/data/columns";
@@ -18,13 +18,6 @@ export function ColumnEntryPage() {
     ? sortedEntries[currentIndex + 1]
     : null;
 
-  useEffect(() => {
-    document.title = entry ? `${entry.title} · ${SITE.name}` : `${SITE.name} · 个人博客`;
-    return () => {
-      document.title = `${SITE.name} · 个人博客`;
-    };
-  }, [entry]);
-
   const goBack = () => navigate("/columns");
 
   const openEntry = (id: string) => {
@@ -34,19 +27,37 @@ export function ColumnEntryPage() {
 
   if (!entryId) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-slate-400 dark:text-slate-500">内容不存在</p>
-      </div>
+      <>
+        <Helmet>
+          <title>内容不存在 - {SITE.name}</title>
+          <meta property="og:title" content={`内容不存在 - ${SITE.name}`} />
+          <meta property="og:description" content="抱歉，您访问的内容不存在" />
+          <meta property="og:image" content="/Jia.png" />
+          <meta property="og:type" content="website" />
+        </Helmet>
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-slate-400 dark:text-slate-500">内容不存在</p>
+        </div>
+      </>
     );
   }
 
   return (
-    <ColumnEntryView
-      entryId={entryId}
-      onBack={goBack}
-      prevEntryId={prevEntry?.id}
-      nextEntryId={nextEntry?.id}
-      onNavigateEntry={openEntry}
-    />
+    <>
+      <Helmet>
+        <title>{entry ? `${entry.title} - ${SITE.name}` : `专栏内容 - ${SITE.name}`}</title>
+        <meta property="og:title" content={entry ? `${entry.title} - ${SITE.name}` : `专栏内容 - ${SITE.name}`} />
+        <meta property="og:description" content={entry?.excerpt || "阅读专栏内容"} />
+        <meta property="og:image" content="/Jia.png" />
+        <meta property="og:type" content="article" />
+      </Helmet>
+      <ColumnEntryView
+        entryId={entryId}
+        onBack={goBack}
+        prevEntryId={prevEntry?.id}
+        nextEntryId={nextEntry?.id}
+        onNavigateEntry={openEntry}
+      />
+    </>
   );
 }

@@ -19,3 +19,9 @@ declare module "*.svg" {
     const src: string;
     export default src;
 }
+
+declare module 'virtual:posts' {
+    import type { BlogPost } from './data/posts';
+
+    export const posts: BlogPost[];
+}

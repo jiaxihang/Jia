@@ -66,7 +66,7 @@ export function Hero({ onNavigate }: HeroProps) {
         style={{ transform: `translateY(${scrollY * 0.3}px)` }}
       />
       <div
-        className="absolute bottom-25 right-10 w-82 h-70 bg-teal-200/12 rounded-full blur-3xl animate-gentle-pulse"
+        className="absolute bottom-40 right-10 w-82 h-70 bg-teal-200/12 rounded-full blur-3xl animate-gentle-pulse"
         style={{ transform: `translateY(${scrollY * 0.2}px)`, animationDelay: "2s" }}
       />
       <div

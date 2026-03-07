@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { BlogPostView } from "@/components/BlogPostView";
 import { posts } from "@/data/posts";
 import { SITE } from "@/config/site";
@@ -10,13 +11,6 @@ export function PostPage() {
   const postId = id ? parseInt(id, 10) : NaN;
   const post = posts.find((p) => p.id === postId);
 
-  useEffect(() => {
-    document.title = post ? `${post.title} · ${SITE.name}` : `${SITE.name} · 个人博客`;
-    return () => {
-      document.title = `${SITE.name} · 个人博客`;
-    };
-  }, [post]);
-
   const goBack = () => navigate("/blog");
 
   const openPost = (targetId: number) => {
@@ -26,9 +20,18 @@ export function PostPage() {
 
   if (!id || isNaN(postId)) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-slate-400">文章不存在</p>
-      </div>
+      <>
+        <Helmet>
+          <title>文章不存在 - {SITE.name}</title>
+          <meta property="og:title" content={`文章不存在 - ${SITE.name}`} />
+          <meta property="og:description" content="抱歉，您访问的文章不存在" />
+          <meta property="og:image" content="/Jia.png" />
+          <meta property="og:type" content="website" />
+        </Helmet>
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-slate-400">文章不存在</p>
+        </div>
+      </>
     );
   }
 
@@ -40,12 +43,21 @@ export function PostPage() {
     : null;
 
   return (
-    <BlogPostView
-      postId={postId}
-      onBack={goBack}
-      prevPostId={prevPost?.id}
-      nextPostId={nextPost?.id}
-      onNavigatePost={openPost}
-    />
+    <>
+      <Helmet>
+        <title>{post ? `${post.title} - ${SITE.name}` : `文章 - ${SITE.name}`}</title>
+        <meta property="og:title" content={post ? `${post.title} - ${SITE.name}` : `文章 - ${SITE.name}`} />
+        <meta property="og:description" content={post?.excerpt || "阅读技术文章和博客内容"} />
+        <meta property="og:image" content="/Jia.png" />
+        <meta property="og:type" content="article" />
+      </Helmet>
+      <BlogPostView
+        postId={postId}
+        onBack={goBack}
+        prevPostId={prevPost?.id}
+        nextPostId={nextPost?.id}
+        onNavigatePost={openPost}
+      />
+    </>
   );
 }
