@@ -144,7 +144,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden transition-all duration-500 overflow-hidden ${menuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+        className={`md:hidden transition-all duration-500 overflow-hidden bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-t border-cyan-100/30 dark:border-slate-700/30 ${menuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
           }`}
       >
         <div className="px-6 py-4 space-y-1">

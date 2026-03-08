@@ -95,16 +95,16 @@ function ReflectionItem({
         }
       }}
     >
-      <div className="absolute left-0 md:left-0 w-3 h-3 rounded-full bg-gradient-to-br from-cyan-400 to-teal-500 border-2 border-white shadow-sm -translate-x-[calc(0.5rem+5px)] md:-translate-x-[calc(1rem+5px)] mt-2.5" />
       <motion.article
         className={cn(
-          "group pl-6 md:pl-8 py-4 pr-4 rounded-xl",
+          "group relative pl-6 md:pl-8 py-4 pr-4 rounded-xl",
           "bg-white/50 dark:bg-slate-800/40 backdrop-blur-sm border border-cyan-50/80 dark:border-cyan-900/30",
           "hover:bg-white/80 dark:hover:bg-slate-800/60 hover:border-cyan-100/60 dark:hover:border-cyan-800/40 hover:shadow-md hover:shadow-cyan-50/50 dark:hover:shadow-cyan-950/20"
         )}
         whileHover={{ y: -1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
+        <div className="absolute left-0 md:left-0 w-3 h-3 rounded-full bg-gradient-to-br from-cyan-400 to-teal-500 border-2 border-white shadow-sm -translate-x-[calc(0.5rem+5px)] md:-translate-x-[calc(1rem+5px)] top-4" />
         <div className="flex items-start gap-3">
           {reflection.mood && (
             <motion.span
