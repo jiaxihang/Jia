@@ -15,7 +15,7 @@ function markdownPlugin() {
   return {
     name: 'markdown-plugin',
     resolveId(id) {
-      if (id === 'virtual:posts') {
+      if (id === 'virtual:posts' || id === 'virtual:columns') {
         return id;
       }
     },
@@ -36,6 +36,24 @@ function markdownPlugin() {
         }).sort((a, b) => b.id - a.id); // 按 id 降序排序
 
         return `export const posts = ${JSON.stringify(posts, null, 2)};`;
+      }
+
+      if (id === 'virtual:columns') {
+        const columnsDir = path.resolve(__dirname, 'src/content/columns');
+        const files = fs.readdirSync(columnsDir).filter(file => file.endsWith('.md'));
+        const columnEntries = files.map(file => {
+          const filePath = path.join(columnsDir, file);
+          const content = fs.readFileSync(filePath, 'utf-8');
+          const { data, content: body } = matter(content);
+          const id = file.replace('.md', '');
+          return {
+            id,
+            ...data,
+            content: body.trim(),
+          };
+        });
+
+        return `export const columnEntries = ${JSON.stringify(columnEntries, null, 2)};`;
       }
     },
   };

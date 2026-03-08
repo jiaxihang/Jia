@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
 import { columns, columnEntries } from "@/data/columns";
 import { cn } from "@/utils/cn";
@@ -150,6 +151,7 @@ function ColumnCard({
 }: ColumnCardProps) {
   const { ref, isInView } = useInView(0.1);
   const [showIntro, setShowIntro] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
@@ -157,15 +159,21 @@ function ColumnCard({
       className={cn("opacity-0", isInView && "animate-fade-in-up")}
       style={{ animationDelay: `${index * 0.12}s` }}
     >
-      <article
+      <motion.article
         className={cn(
           "group relative h-full rounded-2xl border overflow-hidden transition-all duration-500",
           "bg-gradient-to-br dark:from-slate-800/60 dark:via-cyan-950/30 dark:to-slate-800/60",
           accentClass,
           "dark:from-slate-800/70 dark:via-cyan-950/40 dark:to-slate-800/70",
-          "border-cyan-100/40 dark:border-cyan-900/30 hover:border-cyan-200/60 dark:hover:border-cyan-800/40",
-          "hover:shadow-xl hover:shadow-cyan-100/25 dark:hover:shadow-cyan-950/30 hover:-translate-y-0.5"
+          "border-cyan-100/40 dark:border-cyan-900/30 hover:border-cyan-200/60 dark:hover:border-cyan-800/40 hover:-translate-y-0.5"
         )}
+        whileHover={{
+          y: -2,
+          boxShadow: "0 0 30px rgba(6,182,212,0.08), inset 0 0 30px rgba(6,182,212,0.06)"
+        }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         <div className="relative p-8 pb-6">
           <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-cyan-200/15 dark:bg-cyan-500/10 blur-xl group-hover:bg-cyan-200/25 transition-colors duration-500" />
@@ -252,7 +260,7 @@ function ColumnCard({
             </div>
           </div>
         )}
-      </article>
+      </motion.article>
     </div>
   );
 }

@@ -40,6 +40,15 @@
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
 }
 
+/* Button press feedback */
+button {
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:active {
+  animation: buttonPress 200ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -191,6 +200,62 @@ html {
 
   50% {
     opacity: 0.8;
+  }
+}
+
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.96);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIndicator {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes elasticSlide {
+  0% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes labelUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes emojiRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(5deg);
   }
 }
 

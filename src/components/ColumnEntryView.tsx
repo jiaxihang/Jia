@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import { columnEntries, columns } from "@/data/columns";
 import { parseMarkdown } from "@/utils/markdown";
 
@@ -42,14 +43,21 @@ export function ColumnEntryView({
           onClick={onBack}
           className="group flex items-center gap-2 text-sm text-slate-400 dark:text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-300 mb-10 animate-fade-in"
         >
-          <svg
-            className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300"
+          <motion.svg
+            className="w-4 h-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            whileHover={{
+              x: -4,
+              transition: {
+                duration: 0.6,
+                ease: [0.34, 1.56, 0.64, 1]
+              }
+            }}
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m4 4h18" />
-          </svg>
+          </motion.svg>
           返回专栏
         </button>
 

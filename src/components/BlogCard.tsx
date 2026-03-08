@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import type { BlogPost } from "@/data/posts";
 
 interface BlogCardProps {
@@ -8,6 +9,8 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post, index, onClick }: BlogCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -25,8 +28,13 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
     >
       <motion.article
         onClick={onClick}
-        className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:shadow-xl hover:shadow-cyan-100/40 dark:hover:shadow-slate-900/40 hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5"
-        whileHover={{ y: -2 }}
+        className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5"
+        whileHover={{
+          y: -2,
+          boxShadow: "0 0 30px rgba(6,182,212,0.1), inset 0 0 30px rgba(6,182,212,0.06)"
+        }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         {/* Cover area with emoji */}
@@ -37,15 +45,19 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
           </div>
           <motion.span
             className="text-6xl drop-shadow-sm relative z-10"
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             {post.coverEmoji}
           </motion.span>
           {/* Category badge */}
-          <span className="absolute top-4 left-4 px-3 py-1 text-xs font-sans tracking-wider text-cyan-700 dark:text-cyan-300 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full border border-cyan-100 dark:border-slate-700">
+          <motion.span
+            className="absolute top-4 left-4 px-3 py-1 text-xs font-sans tracking-wider text-cyan-700 dark:text-cyan-300 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full border border-cyan-100 dark:border-slate-700"
+            whileHover={{ y: -2 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10, delay: 0.05 }}
+          >
             {post.category}
-          </span>
+          </motion.span>
         </div>
 
         {/* Content */}
@@ -81,7 +93,7 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
           <motion.div
             className="mt-4 flex items-center gap-2 text-cyan-500 dark:text-cyan-400 text-sm font-sans"
             initial={{ opacity: 0, x: -10 }}
-            whileHover={{ opacity: 1, x: 0 }}
+            animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <span>阅读全文</span>

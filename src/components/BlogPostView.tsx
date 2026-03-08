@@ -45,6 +45,14 @@ export function BlogPostView({
 
   return (
     <section className="relative min-h-screen pt-28 pb-20 px-6">
+      {/* Paper texture overlay */}
+      <div className="absolute inset-0 opacity-[0.025] dark:opacity-0 pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='2' /%3E%3C/filter%3E%3Crect width='100' height='100' fill='%23000' filter='url(%23noise)' /%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+        }}
+      />
+
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-cyan-100 dark:bg-slate-800 z-50">
         <div

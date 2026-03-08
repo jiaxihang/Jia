@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { SITE, NAV_ITEMS } from "@/config/site";
 
 interface FooterProps {
@@ -5,8 +7,44 @@ interface FooterProps {
 }
 
 export function Footer({ onNavigate }: FooterProps) {
+  const [showInkWash, setShowInkWash] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+
+      // Show ink wash effect when near bottom (85% of page scrolled)
+      setShowInkWash(scrollPercent > 0.85);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <footer className="relative py-16 px-6 bg-gradient-to-b from-transparent to-cyan-50/30">
+      {/* Ink wash decoration from bottom */}
+      <motion.div
+        className="absolute -top-48 left-0 right-0 h-64 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 800px 300px at center, rgba(6, 182, 212, 0.08) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+        animate={{ opacity: showInkWash ? 0.6 : 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      />
+
+      <motion.div
+        className="absolute -top-64 left-1/4 w-96 h-96 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(13, 148, 136, 0.06) 0%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+        animate={{ opacity: showInkWash ? 0.4 : 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+      />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-200/30 to-transparent" />
 
       <div className="max-w-4xl mx-auto text-center">
@@ -14,7 +52,26 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="mb-8">
           <div className="inline-flex items-center gap-3">
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-cyan-300/50" />
-            <span className="text-cyan-300 text-sm">✦</span>
+            <motion.span
+              className="text-cyan-300 text-sm"
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            >
+              <motion.span
+                animate={{ opacity: [0.6, 1, 0.6] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                ✦
+              </motion.span>
+            </motion.span>
             <div className="w-8 h-px bg-gradient-to-r from-cyan-300/50 to-transparent" />
           </div>
         </div>
