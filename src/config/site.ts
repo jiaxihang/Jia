@@ -5,7 +5,7 @@
 
 export const SITE = {
   name: "浮光掠影",
-  tagline: "以文字记录时光，用代码编织梦想",
+  tagline: "欢迎来到我的星空",
   description: "个人博客 · 技术分享 · 生活随笔",
   year: new Date().getFullYear(),
 } as const;
