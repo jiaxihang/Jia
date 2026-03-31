@@ -528,3 +528,40 @@ html {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+
+/* ═══════════════════════════════════════════
+   View Transition：涟漪主题切换
+   ═══════════════════════════════════════════ */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+  /* duration 由 JS 动态计算，与 Canvas 涟漪同速 */
+  animation: vt-ripple-expand var(--vt-duration, 1.5s) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes vt-ripple-expand {
+  0% {
+    clip-path: circle(0px at var(--vt-rx) var(--vt-ry));
+    filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 40px rgba(6, 182, 212, 0.5)) drop-shadow(0 0 80px rgba(6, 182, 212, 0.25));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5)) drop-shadow(0 0 25px rgba(6, 182, 212, 0.3)) drop-shadow(0 0 50px rgba(6, 182, 212, 0.12));
+  }
+
+  100% {
+    clip-path: circle(var(--vt-max-r, 150vmax) at var(--vt-rx) var(--vt-ry));
+    filter: drop-shadow(0 0 0px rgba(6, 182, 212, 0)) drop-shadow(0 0 0px rgba(6, 182, 212, 0)) drop-shadow(0 0 0px rgba(6, 182, 212, 0));
+  }
+}

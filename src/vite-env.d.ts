@@ -25,3 +25,9 @@ declare module 'virtual:posts' {
 
     export const posts: BlogPost[];
 }
+
+declare module 'virtual:columns' {
+    import type { ColumnEntry } from './data/columns';
+
+    export const columnEntries: ColumnEntry[];
+}
