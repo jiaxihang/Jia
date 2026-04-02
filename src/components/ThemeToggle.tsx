@@ -363,8 +363,8 @@ export function ThemeToggle() {
                     className="fixed inset-0 pointer-events-none"
                     style={{
                         zIndex: 2147483647,
-                        width: "100vw",
-                        height: "100vh",
+                        width: "100%",
+                        height: "100%",
                         opacity: canvasFading ? 0 : 1,
                         transition: "opacity 0.7s ease-out",
                     }}
