@@ -249,6 +249,14 @@ html {
   }
 }
 
+/* Global wrapper to prevent horizontal overflow */
+.app-wrapper {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 @keyframes emojiRotate {
   0% {
     transform: rotate(0deg);
