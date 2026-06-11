@@ -154,28 +154,64 @@ export function ParticleBackground() {
       });
     };
 
-    /** 以一颗随机亮星为锚点，把附近的星连成一组星座 */
+    /**
+     * 以一颗亮星为锚点，把小范围内的近邻连成一组紧凑星座
+     * 贪心最近邻串联成干净折线，超跨度的边直接舍弃，避免乱划线
+     */
     const spawnConstellation = () => {
-      if (stars.length < 6) return;
-      const anchorIdx = Math.floor(Math.random() * stars.length);
-      const anchor = stars[anchorIdx];
-      const neighbors = stars
-        .map((s, i) => ({ i, d: (s.x - anchor.x) ** 2 + (s.y - anchor.y) ** 2 }))
-        .filter((o) => o.i !== anchorIdx && o.d < 240 * 240)
-        .sort((a, b) => a.d - b.d)
-        .slice(0, 4 + Math.floor(Math.random() * 3));
-      if (neighbors.length < 2) return;
+      if (stars.length < 8) return;
+      const candidates = stars
+        .map((s, i) => ({ s, i }))
+        .filter((o) => o.s.z > 0.35);
+      if (candidates.length === 0) return;
+      const anchor = candidates[Math.floor(Math.random() * candidates.length)];
 
-      // 锚点出发依次串联近邻，偶尔闭合成环，形状更像星座
-      const chain = [anchorIdx, ...neighbors.map((o) => o.i)];
+      // 范围收紧：130px 内才算同一星座
+      const near = stars
+        .map((s, i) => ({ i, d: Math.hypot(s.x - anchor.s.x, s.y - anchor.s.y) }))
+        .filter((o) => o.i !== anchor.i && o.d < 130)
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 5);
+      if (near.length < 3) return;
+
+      // 与已有星座保持距离，画面不凌乱
+      for (const c of constellations) {
+        const other = stars[c.edges[0]?.[0]];
+        if (other && Math.hypot(other.x - anchor.s.x, other.y - anchor.s.y) < 420) return;
+      }
+
+      // 贪心最近邻串联：每步连最近的未访问星，单边超 110px 就停
+      const pool = [...near.map((o) => o.i)];
+      const path = [anchor.i];
+      while (pool.length) {
+        const last = stars[path[path.length - 1]];
+        let bestK = 0;
+        let bestD = Infinity;
+        pool.forEach((idx, k) => {
+          const d = Math.hypot(stars[idx].x - last.x, stars[idx].y - last.y);
+          if (d < bestD) {
+            bestD = d;
+            bestK = k;
+          }
+        });
+        if (bestD > 110) break;
+        path.push(pool.splice(bestK, 1)[0]);
+      }
+      if (path.length < 4) return;
+
       const edges: [number, number][] = [];
-      for (let k = 0; k < chain.length - 1; k++) edges.push([chain[k], chain[k + 1]]);
-      if (chain.length > 4 && Math.random() > 0.5) edges.push([chain[chain.length - 1], anchorIdx]);
+      for (let k = 0; k < path.length - 1; k++) edges.push([path[k], path[k + 1]]);
+      // 首尾相近则闭合成环，更像星座图形
+      const first = stars[path[0]];
+      const last = stars[path[path.length - 1]];
+      if (Math.hypot(first.x - last.x, first.y - last.y) < 100 && Math.random() > 0.4) {
+        edges.push([path[path.length - 1], path[0]]);
+      }
 
       constellations.push({
         edges,
         birth: time,
-        life: 380 + Math.random() * 260, // 约 6~10 秒
+        life: 420 + Math.random() * 240, // 约 7~11 秒
       });
     };
 
@@ -232,25 +268,25 @@ export function ParticleBackground() {
       }
     };
 
-    /** 周期性星座：渐入—停留—渐出，错峰生灭，星空中始终有星座流转 */
+    /** 周期性星座：呼吸灯式整组统一亮起又暗下，错峰生灭循环不息 */
     const drawConstellations = () => {
       if (constellations.length < 2 && time >= nextConstellationAt) {
         spawnConstellation();
-        nextConstellationAt = time + 200 + Math.random() * 280;
+        nextConstellationAt = time + 260 + Math.random() * 320;
       }
       constellations = constellations.filter((c) => time - c.birth < c.life);
       if (constellations.length === 0) return;
 
       const a = getAccent(accentRef.current);
       const lineColor = themeRef.current === "dark" ? a.bright : a.rgb;
-      const baseAlpha = themeRef.current === "dark" ? 0.3 : 0.22;
+      const baseAlpha = themeRef.current === "dark" ? 0.32 : 0.24;
 
       for (const c of constellations) {
-        const t = (time - c.birth) / c.life;
-        // 渐入 18% — 保持 — 渐出 25%
-        const envelope = Math.max(0, Math.min(1, t / 0.18, (1 - t) / 0.25));
-        const alpha = baseAlpha * envelope;
-        if (alpha <= 0.004) continue;
+        const t = Math.min(1, Math.max(0, (time - c.birth) / c.life));
+        // 呼吸灯：整组随 sin 曲线缓缓亮起、缓缓暗下
+        const breath = Math.sin(Math.PI * t) ** 1.4;
+        const alpha = baseAlpha * breath;
+        if (alpha <= 0.005) continue;
 
         for (const [i, j] of c.edges) {
           const s1 = stars[i];
@@ -262,11 +298,16 @@ export function ParticleBackground() {
           ctx.moveTo(s1.dx, s1.dy);
           ctx.lineTo(s2.dx, s2.dy);
           ctx.stroke();
+        }
 
-          // 节点微光，让星座成员略亮于背景
+        // 节点微光（顶点去重），星座成员随呼吸略亮于背景
+        const nodes = new Set(c.edges.flat());
+        for (const i of nodes) {
+          const s = stars[i];
+          if (!s) continue;
           ctx.beginPath();
-          ctx.arc(s1.dx, s1.dy, s1.size * 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${lineColor},${alpha * 0.35})`;
+          ctx.arc(s.dx, s.dy, s.size * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${lineColor},${alpha * 0.4})`;
           ctx.fill();
         }
       }
