@@ -29,7 +29,7 @@ export function Footer({ onNavigate }: FooterProps) {
       <motion.div
         className="absolute -top-48 left-0 right-0 h-64 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 800px 300px at center, rgba(6, 182, 212, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 800px 300px at center, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%)",
           filter: "blur(40px)",
         }}
         animate={{ opacity: showInkWash ? 0.6 : 0 }}
@@ -39,7 +39,7 @@ export function Footer({ onNavigate }: FooterProps) {
       <motion.div
         className="absolute -top-64 left-1/4 w-96 h-96 pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(13, 148, 136, 0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(var(--accent2-rgb), 0.06) 0%, transparent 70%)",
           filter: "blur(80px)",
         }}
         animate={{ opacity: showInkWash ? 0.4 : 0 }}
