@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useEffects } from "@/contexts/EffectsContext";
+import { getAccent } from "@/config/accents";
 
 /**
  * 光标星尘拖尾
@@ -19,19 +20,19 @@ interface Dust {
   spin: number;
 }
 
-const DARK_COLORS = ["165,243,252", "153,246,228", "255,255,255"];
-const LIGHT_COLORS = ["8,145,178", "13,148,136", "6,182,212"];
-
 export function CursorStardust() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
   const { settings } = useEffects();
 
   const themeRef = useRef(theme);
+  const accentRef = useRef(settings.accent);
   themeRef.current = theme;
+  accentRef.current = settings.accent;
 
   const enabled =
     settings.stardust &&
+    settings.mode === "high" &&
     typeof window !== "undefined" &&
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
     window.matchMedia("(pointer: fine)").matches;
@@ -64,7 +65,8 @@ export function CursorStardust() {
     };
 
     const spawn = (x: number, y: number, count: number) => {
-      const colors = themeRef.current === "dark" ? DARK_COLORS : LIGHT_COLORS;
+      const accent = getAccent(accentRef.current);
+      const colors = themeRef.current === "dark" ? accent.starsDark : accent.starsLight;
       for (let i = 0; i < count; i++) {
         const life = 30 + Math.random() * 35;
         dusts.push({

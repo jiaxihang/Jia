@@ -1,13 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import type { AccentId } from "@/config/accents";
 
 /**
  * 全局特效设置
- * 星空密度、流星、星座连线、光标星尘均可自定义，持久化到 localStorage
+ * 高功效/低功耗模式、主题色、星空密度、流星、星座连线、光标星尘
+ * 全部可自定义并持久化到 localStorage
  */
 
 export type StarDensity = "low" | "medium" | "high";
+export type EffectsMode = "high" | "low";
 
 export interface EffectsSettings {
+  mode: EffectsMode;
+  accent: AccentId;
   density: StarDensity;
   meteors: boolean;
   constellation: boolean;
@@ -21,6 +26,8 @@ interface EffectsContextType {
 }
 
 const DEFAULT_SETTINGS: EffectsSettings = {
+  mode: "high",
+  accent: "cyan",
   density: "medium",
   meteors: true,
   constellation: true,
@@ -49,6 +56,11 @@ export function EffectsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
   }, [settings]);
+
+  // 主题色通过 data-accent 让 CSS 覆盖整站色板
+  useEffect(() => {
+    document.documentElement.dataset.accent = settings.accent;
+  }, [settings.accent]);
 
   const updateSettings = (patch: Partial<EffectsSettings>) =>
     setSettings((s) => ({ ...s, ...patch }));

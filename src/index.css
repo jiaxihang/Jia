@@ -40,6 +40,158 @@
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
 }
 
+/* ═══════════════════════════════════════════
+   主题色系统
+   通过 data-accent 覆盖 cyan/teal 两条色板变量，
+   全站 Tailwind 工具类与 Canvas 特效整体换色
+   ═══════════════════════════════════════════ */
+
+:root {
+  --accent-rgb: 6, 182, 212;
+  --accent2-rgb: 13, 148, 136;
+  --accent-bright-rgb: 34, 211, 238;
+}
+
+[data-accent="violet"] {
+  --accent-rgb: 139, 92, 246;
+  --accent2-rgb: 217, 70, 239;
+  --accent-bright-rgb: 167, 139, 250;
+  --color-cyan-50: #f5f3ff;
+  --color-cyan-100: #ede9fe;
+  --color-cyan-200: #ddd6fe;
+  --color-cyan-300: #c4b5fd;
+  --color-cyan-400: #a78bfa;
+  --color-cyan-500: #8b5cf6;
+  --color-cyan-600: #7c3aed;
+  --color-cyan-700: #6d28d9;
+  --color-cyan-800: #5b21b6;
+  --color-cyan-900: #4c1d95;
+  --color-cyan-950: #2e1065;
+  --color-teal-50: #fdf4ff;
+  --color-teal-100: #fae8ff;
+  --color-teal-200: #f5d0fe;
+  --color-teal-300: #f0abfc;
+  --color-teal-400: #e879f9;
+  --color-teal-500: #d946ef;
+  --color-teal-600: #c026d3;
+  --color-teal-700: #a21caf;
+  --color-teal-800: #86198f;
+  --color-teal-900: #701a75;
+}
+
+[data-accent="rose"] {
+  --accent-rgb: 244, 63, 94;
+  --accent2-rgb: 236, 72, 153;
+  --accent-bright-rgb: 251, 113, 133;
+  --color-cyan-50: #fff1f2;
+  --color-cyan-100: #ffe4e6;
+  --color-cyan-200: #fecdd3;
+  --color-cyan-300: #fda4af;
+  --color-cyan-400: #fb7185;
+  --color-cyan-500: #f43f5e;
+  --color-cyan-600: #e11d48;
+  --color-cyan-700: #be123c;
+  --color-cyan-800: #9f1239;
+  --color-cyan-900: #881337;
+  --color-cyan-950: #4c0519;
+  --color-teal-50: #fdf2f8;
+  --color-teal-100: #fce7f3;
+  --color-teal-200: #fbcfe8;
+  --color-teal-300: #f9a8d4;
+  --color-teal-400: #f472b6;
+  --color-teal-500: #ec4899;
+  --color-teal-600: #db2777;
+  --color-teal-700: #be185d;
+  --color-teal-800: #9d174d;
+  --color-teal-900: #831843;
+}
+
+[data-accent="amber"] {
+  --accent-rgb: 245, 158, 11;
+  --accent2-rgb: 249, 115, 22;
+  --accent-bright-rgb: 251, 191, 36;
+  --color-cyan-50: #fffbeb;
+  --color-cyan-100: #fef3c7;
+  --color-cyan-200: #fde68a;
+  --color-cyan-300: #fcd34d;
+  --color-cyan-400: #fbbf24;
+  --color-cyan-500: #f59e0b;
+  --color-cyan-600: #d97706;
+  --color-cyan-700: #b45309;
+  --color-cyan-800: #92400e;
+  --color-cyan-900: #78350f;
+  --color-cyan-950: #451a03;
+  --color-teal-50: #fff7ed;
+  --color-teal-100: #ffedd5;
+  --color-teal-200: #fed7aa;
+  --color-teal-300: #fdba74;
+  --color-teal-400: #fb923c;
+  --color-teal-500: #f97316;
+  --color-teal-600: #ea580c;
+  --color-teal-700: #c2410c;
+  --color-teal-800: #9a3412;
+  --color-teal-900: #7c2d12;
+}
+
+[data-accent="blue"] {
+  --accent-rgb: 59, 130, 246;
+  --accent2-rgb: 99, 102, 241;
+  --accent-bright-rgb: 96, 165, 250;
+  --color-cyan-50: #eff6ff;
+  --color-cyan-100: #dbeafe;
+  --color-cyan-200: #bfdbfe;
+  --color-cyan-300: #93c5fd;
+  --color-cyan-400: #60a5fa;
+  --color-cyan-500: #3b82f6;
+  --color-cyan-600: #2563eb;
+  --color-cyan-700: #1d4ed8;
+  --color-cyan-800: #1e40af;
+  --color-cyan-900: #1e3a8a;
+  --color-cyan-950: #172554;
+  --color-teal-50: #eef2ff;
+  --color-teal-100: #e0e7ff;
+  --color-teal-200: #c7d2fe;
+  --color-teal-300: #a5b4fc;
+  --color-teal-400: #818cf8;
+  --color-teal-500: #6366f1;
+  --color-teal-600: #4f46e5;
+  --color-teal-700: #4338ca;
+  --color-teal-800: #3730a3;
+  --color-teal-900: #312e81;
+}
+
+[data-accent="emerald"] {
+  --accent-rgb: 16, 185, 129;
+  --accent2-rgb: 34, 197, 94;
+  --accent-bright-rgb: 52, 211, 153;
+  --color-cyan-50: #ecfdf5;
+  --color-cyan-100: #d1fae5;
+  --color-cyan-200: #a7f3d0;
+  --color-cyan-300: #6ee7b9;
+  --color-cyan-400: #34d399;
+  --color-cyan-500: #10b981;
+  --color-cyan-600: #059669;
+  --color-cyan-700: #047857;
+  --color-cyan-800: #065f46;
+  --color-cyan-900: #064e3b;
+  --color-cyan-950: #022c22;
+  --color-teal-50: #f0fdf4;
+  --color-teal-100: #dcfce7;
+  --color-teal-200: #bbf7d0;
+  --color-teal-300: #86efac;
+  --color-teal-400: #4ade80;
+  --color-teal-500: #22c55e;
+  --color-teal-600: #16a34a;
+  --color-teal-700: #15803d;
+  --color-teal-800: #166534;
+  --color-teal-900: #14532d;
+}
+
+/* 文字选中色跟随主题色 */
+::selection {
+  background: rgba(var(--accent-rgb), 0.22);
+}
+
 /* Button press feedback */
 button {
   transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -60,7 +212,7 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f0fdfa;
+  background: var(--color-teal-50);
 }
 
 .dark ::-webkit-scrollbar-track {
@@ -68,12 +220,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #06b6d4, #0d9488);
+  background: linear-gradient(to bottom, var(--color-cyan-500), var(--color-teal-600));
   border-radius: 3px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #0891b2, #0f766e);
+  background: linear-gradient(to bottom, var(--color-cyan-600), var(--color-teal-700));
 }
 
 /* Animations */
@@ -175,7 +327,7 @@ html {
   }
 
   50% {
-    border-color: #06b6d4;
+    border-color: var(--color-cyan-500);
   }
 }
 
@@ -217,16 +369,6 @@ html {
   }
 }
 
-@keyframes slideIndicator {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
 @keyframes elasticSlide {
   0% {
     transform: translateX(-10px);
@@ -239,32 +381,12 @@ html {
   }
 }
 
-@keyframes labelUp {
-  0% {
-    transform: translateY(0);
-  }
-
-  100% {
-    transform: translateY(-2px);
-  }
-}
-
 /* Global wrapper to prevent horizontal overflow */
 .app-wrapper {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
   box-sizing: border-box;
-}
-
-@keyframes emojiRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(5deg);
-  }
 }
 
 @keyframes drawLine {
@@ -368,19 +490,19 @@ html {
 
 .dark .glass {
   background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
 }
 
 .glass-dark {
   background: rgba(8, 51, 68, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
 }
 
 /* Text gradient - refined */
 .text-gradient {
-  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #0d9488 100%);
+  background: linear-gradient(135deg, var(--color-cyan-600) 0%, var(--color-cyan-500) 50%, var(--color-teal-600) 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -389,53 +511,223 @@ html {
 
 /* Ink wash effect for decorative elements */
 .ink-wash {
-  background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.06) 0%, transparent 65%);
+  background: radial-gradient(ellipse at center, rgba(var(--accent-rgb), 0.06) 0%, transparent 65%);
 }
 
 /* Soft card glow */
 .card-glow {
-  box-shadow: 0 1px 2px rgba(6, 182, 212, 0.04);
+  box-shadow: 0 1px 2px rgba(var(--accent-rgb), 0.04);
 }
 
-/* Prose styling for blog content */
+/* ═══════════════════════════════════════════
+   阅读排版（prose-blog）
+   ═══════════════════════════════════════════ */
+
 .prose-blog h2 {
   font-family: "Noto Serif SC", serif;
-  color: #164e63;
+  color: var(--color-cyan-900);
   margin-top: 2em;
   margin-bottom: 0.8em;
   font-weight: 600;
 }
 
 .dark .prose-blog h2 {
-  color: #67e8f9;
+  color: var(--color-cyan-300);
+}
+
+.prose-blog h3 {
+  font-family: "Noto Serif SC", serif;
+  color: var(--color-cyan-800);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  font-weight: 600;
+}
+
+.dark .prose-blog h3 {
+  color: var(--color-cyan-200);
 }
 
 .prose-blog p {
   color: #475569;
-  line-height: 1.9;
+  line-height: 1.95;
   margin-bottom: 1.2em;
   font-size: 1.05rem;
+  letter-spacing: 0.01em;
 }
 
 .dark .prose-blog p {
-  color: #94a3b8;
+  color: #a8b6c8;
+}
+
+.prose-blog a {
+  color: var(--color-cyan-600);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.35);
+  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  padding-bottom: 1px;
+}
+
+.prose-blog a:hover {
+  color: var(--color-cyan-500);
+  border-bottom-color: rgba(var(--accent-rgb), 0.9);
+  background-color: rgba(var(--accent-rgb), 0.06);
+}
+
+.dark .prose-blog a {
+  color: var(--color-cyan-400);
+}
+
+.dark .prose-blog a:hover {
+  color: var(--color-cyan-300);
 }
 
 .prose-blog blockquote {
-  border-left: 3px solid #06b6d4;
+  border-left: 3px solid var(--color-cyan-500);
   padding-left: 1.2em;
   color: #64748b;
   font-style: italic;
   margin: 1.5em 0;
-  background: linear-gradient(to right, rgba(6, 182, 212, 0.05), transparent);
+  background: linear-gradient(to right, rgba(var(--accent-rgb), 0.05), transparent);
   padding: 1em 1.2em;
   border-radius: 0 8px 8px 0;
 }
 
 .dark .prose-blog blockquote {
-  border-left-color: #22d3ee;
+  border-left-color: var(--color-cyan-400);
   color: #94a3b8;
-  background: linear-gradient(to right, rgba(6, 182, 212, 0.1), transparent);
+  background: linear-gradient(to right, rgba(var(--accent-rgb), 0.1), transparent);
+}
+
+.prose-blog ul li::marker,
+.prose-blog ol li::marker {
+  color: var(--color-cyan-400);
+}
+
+.prose-blog li {
+  color: #475569;
+  line-height: 1.9;
+  margin-bottom: 0.3em;
+}
+
+.dark .prose-blog li {
+  color: #a8b6c8;
+}
+
+.prose-blog strong {
+  color: var(--color-cyan-800);
+  font-weight: 600;
+}
+
+.dark .prose-blog strong {
+  color: var(--color-cyan-200);
+}
+
+.prose-blog img {
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.1);
+  margin: 1.5em auto;
+}
+
+.prose-blog hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-cyan-200), transparent);
+  margin: 2.5em 0;
+}
+
+/* 行内代码 */
+.prose-blog :not(pre)>code {
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--color-cyan-700);
+  padding: 0.15em 0.45em;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.dark .prose-blog :not(pre)>code {
+  background: rgba(var(--accent-rgb), 0.14);
+  color: var(--color-cyan-300);
+}
+
+/* 代码块 */
+.prose-blog pre {
+  border-radius: 12px;
+  border: 1px solid rgba(var(--accent-rgb), 0.12);
+  background: #f8fcfd;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose-blog pre code {
+  background: transparent;
+}
+
+.dark .prose-blog pre {
+  background: #0b1424;
+  border-color: rgba(var(--accent-rgb), 0.18);
+}
+
+/* 暗色代码高亮（覆盖 github.css 浅色主题） */
+.dark .hljs {
+  color: #c9d1d9;
+  background: transparent;
+}
+
+.dark .hljs-comment,
+.dark .hljs-quote {
+  color: #8b949e;
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-subst,
+.dark .hljs-deletion {
+  color: #ff7b72;
+}
+
+.dark .hljs-string,
+.dark .hljs-attr,
+.dark .hljs-regexp,
+.dark .hljs-addition,
+.dark .hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-title.function_,
+.dark .hljs-title.class_ {
+  color: #d2a8ff;
+}
+
+.dark .hljs-number,
+.dark .hljs-literal,
+.dark .hljs-symbol,
+.dark .hljs-bullet {
+  color: #79c0ff;
+}
+
+.dark .hljs-built_in,
+.dark .hljs-type,
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-attribute {
+  color: #ffa657;
+}
+
+.dark .hljs-name,
+.dark .hljs-selector-id,
+.dark .hljs-selector-class,
+.dark .hljs-tag {
+  color: #7ee787;
+}
+
+.dark .hljs-emphasis {
+  font-style: italic;
+}
+
+.dark .hljs-strong {
+  font-weight: 600;
 }
 
 /* Horizontal line decoration */
@@ -450,7 +742,7 @@ html {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, #a5f3fc, transparent);
+  background: linear-gradient(to right, transparent, var(--color-cyan-200), transparent);
 }
 
 /* Timeline line animation */
@@ -513,7 +805,7 @@ html {
 
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 20px 40px -15px rgba(var(--accent-rgb), 0.15);
 }
 
 /* Subtle grain overlay for depth (optional, use .grain on parent) */
@@ -528,7 +820,7 @@ html {
 
 /* Softer focus ring for accessibility */
 *:focus-visible {
-  outline: 2px solid rgba(6, 182, 212, 0.5);
+  outline: 2px solid rgba(var(--accent-rgb), 0.5);
   outline-offset: 2px;
 }
 
@@ -538,15 +830,15 @@ html {
 }
 
 /* ═══════════════════════════════════════════
-   星空特效：极光 / 星芒 / 聚光
+   星空特效：极光 / 星芒 / 聚光 / 转场光束
    ═══════════════════════════════════════════ */
 
-/* Hero 极光带：缓慢漂移旋转的青绿光晕 */
+/* Hero 极光带：缓慢漂移旋转的光晕 */
 .aurora-band {
   background: linear-gradient(115deg,
-      rgba(6, 182, 212, 0.10) 0%,
-      rgba(45, 212, 191, 0.08) 35%,
-      rgba(94, 234, 212, 0.05) 65%,
+      rgba(var(--accent-rgb), 0.10) 0%,
+      rgba(var(--accent2-rgb), 0.08) 35%,
+      rgba(var(--accent-bright-rgb), 0.05) 65%,
       transparent 100%);
   filter: blur(60px);
   border-radius: 50%;
@@ -555,23 +847,23 @@ html {
 
 .aurora-band-alt {
   background: linear-gradient(245deg,
-      rgba(13, 148, 136, 0.09) 0%,
-      rgba(6, 182, 212, 0.07) 40%,
+      rgba(var(--accent2-rgb), 0.09) 0%,
+      rgba(var(--accent-rgb), 0.07) 40%,
       transparent 100%);
 }
 
 .dark .aurora-band {
   background: linear-gradient(115deg,
-      rgba(34, 211, 238, 0.13) 0%,
-      rgba(45, 212, 191, 0.10) 35%,
-      rgba(94, 234, 212, 0.05) 65%,
+      rgba(var(--accent-bright-rgb), 0.13) 0%,
+      rgba(var(--accent2-rgb), 0.10) 35%,
+      rgba(var(--accent-rgb), 0.05) 65%,
       transparent 100%);
 }
 
 .dark .aurora-band-alt {
   background: linear-gradient(245deg,
-      rgba(20, 184, 166, 0.12) 0%,
-      rgba(34, 211, 238, 0.08) 40%,
+      rgba(var(--accent2-rgb), 0.12) 0%,
+      rgba(var(--accent-bright-rgb), 0.08) 40%,
       transparent 100%);
 }
 
@@ -613,16 +905,35 @@ html {
 /* 卡片鼠标跟随聚光 */
 .card-spotlight {
   background: radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      rgba(6, 182, 212, 0.10),
-      rgba(45, 212, 191, 0.05) 40%,
+      rgba(var(--accent-rgb), 0.10),
+      rgba(var(--accent2-rgb), 0.05) 40%,
       transparent 70%);
 }
 
 .dark .card-spotlight {
   background: radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      rgba(34, 211, 238, 0.12),
-      rgba(45, 212, 191, 0.06) 40%,
+      rgba(var(--accent-bright-rgb), 0.12),
+      rgba(var(--accent2-rgb), 0.06) 40%,
       transparent 70%);
+}
+
+/* 页面转场的星河光束 */
+.page-sweep {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45vw;
+  pointer-events: none;
+  z-index: 45;
+  transform: skewX(-14deg);
+  background: linear-gradient(100deg,
+      transparent 0%,
+      rgba(var(--accent-bright-rgb), 0.07) 35%,
+      rgba(var(--accent-rgb), 0.13) 50%,
+      rgba(var(--accent-bright-rgb), 0.07) 65%,
+      transparent 100%);
+  filter: blur(18px);
 }
 
 /* 减弱动效偏好：停掉装饰性动画 */
@@ -644,7 +955,7 @@ html {
 
 
 /* ═══════════════════════════════════════════
-   View Transition：涟漪主题切换
+   View Transition：涟漪主题切换（水纹完全体）
    ═══════════════════════════════════════════ */
 
 ::view-transition-old(root),
@@ -663,18 +974,56 @@ html {
   animation: vt-ripple-expand var(--vt-duration, 1.5s) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
+/* 高功效模式：叠加 SVG 水纹位移滤镜，文字随涟漪波动 */
+html.vt-water::view-transition-new(root) {
+  animation-name: vt-ripple-expand-water;
+}
+
+/* 低功耗模式：轻量光晕 */
+html.vt-lite::view-transition-new(root) {
+  animation-name: vt-ripple-expand-lite;
+}
+
 @keyframes vt-ripple-expand {
   0% {
     clip-path: circle(0px at var(--vt-rx) var(--vt-ry));
-    filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 40px rgba(6, 182, 212, 0.5)) drop-shadow(0 0 80px rgba(6, 182, 212, 0.25));
+    filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.8)) drop-shadow(0 0 40px rgba(var(--accent-rgb), 0.5)) drop-shadow(0 0 80px rgba(var(--accent-rgb), 0.25));
   }
 
   50% {
-    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5)) drop-shadow(0 0 25px rgba(6, 182, 212, 0.3)) drop-shadow(0 0 50px rgba(6, 182, 212, 0.12));
+    filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.5)) drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.3)) drop-shadow(0 0 50px rgba(var(--accent-rgb), 0.12));
   }
 
   100% {
     clip-path: circle(var(--vt-max-r, 150vmax) at var(--vt-rx) var(--vt-ry));
-    filter: drop-shadow(0 0 0px rgba(6, 182, 212, 0)) drop-shadow(0 0 0px rgba(6, 182, 212, 0)) drop-shadow(0 0 0px rgba(6, 182, 212, 0));
+    filter: drop-shadow(0 0 0px rgba(var(--accent-rgb), 0)) drop-shadow(0 0 0px rgba(var(--accent-rgb), 0)) drop-shadow(0 0 0px rgba(var(--accent-rgb), 0));
+  }
+}
+
+@keyframes vt-ripple-expand-water {
+  0% {
+    clip-path: circle(0px at var(--vt-rx) var(--vt-ry));
+    filter: url(#theme-water) drop-shadow(0 0 18px rgba(var(--accent-rgb), 0.9)) drop-shadow(0 0 45px rgba(var(--accent-rgb), 0.55)) drop-shadow(0 0 90px rgba(var(--accent-rgb), 0.3));
+  }
+
+  50% {
+    filter: url(#theme-water) drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.55)) drop-shadow(0 0 28px rgba(var(--accent-rgb), 0.32)) drop-shadow(0 0 55px rgba(var(--accent-rgb), 0.14));
+  }
+
+  100% {
+    clip-path: circle(var(--vt-max-r, 150vmax) at var(--vt-rx) var(--vt-ry));
+    filter: url(#theme-water) drop-shadow(0 0 0px rgba(var(--accent-rgb), 0)) drop-shadow(0 0 0px rgba(var(--accent-rgb), 0)) drop-shadow(0 0 0px rgba(var(--accent-rgb), 0));
+  }
+}
+
+@keyframes vt-ripple-expand-lite {
+  0% {
+    clip-path: circle(0px at var(--vt-rx) var(--vt-ry));
+    filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.5));
+  }
+
+  100% {
+    clip-path: circle(var(--vt-max-r, 150vmax) at var(--vt-rx) var(--vt-ry));
+    filter: drop-shadow(0 0 0px rgba(var(--accent-rgb), 0));
   }
 }

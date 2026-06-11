@@ -40,11 +40,8 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
         ref={cardRef}
         onClick={onClick}
         onMouseMove={handleMouseMove}
-        className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5"
-        whileHover={{
-          y: -2,
-          boxShadow: "0 0 30px rgba(6,182,212,0.1), inset 0 0 30px rgba(6,182,212,0.06)"
-        }}
+        className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(var(--accent-rgb),0.12),inset_0_0_30px_rgba(var(--accent-rgb),0.06)]"
+        whileHover={{ y: -2 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
