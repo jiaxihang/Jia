@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { posts } from "@/data/posts";
 import { parseMarkdown } from "@/utils/markdown";
 
@@ -18,22 +18,10 @@ export function BlogPostView({
   onNavigatePost,
 }: BlogPostViewProps) {
   const post = posts.find((p) => p.id === postId);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [postId]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(Math.min(100, Math.max(0, progress)));
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   if (!post) {
     return (
@@ -52,14 +40,6 @@ export function BlogPostView({
           backgroundRepeat: 'repeat',
         }}
       />
-
-      {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-cyan-100 dark:bg-slate-800 z-50">
-        <div
-          className="h-full bg-gradient-to-r from-cyan-500 to-teal-500 transition-all duration-150 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
 
       {/* Background decorations */}
       <div className="absolute top-40 left-0 w-64 h-64 bg-cyan-100/20 rounded-full blur-3xl dark:bg-cyan-900/10" />
