@@ -291,8 +291,10 @@ function useWaterRipple() {
             if (t < 1) {
                 rafRef.current = requestAnimationFrame(tick);
             } else {
+                // 只归零位移，不移除 vt-water：转场进行中换 animation-name
+                // 会让涟漪动画从 0% 重播（表现为"切换走了两次"）。
+                // 类名由 transition.finished 后的 cancel() 统一清理。
                 disp.setAttribute("scale", "0");
-                document.documentElement.classList.remove("vt-water");
             }
         };
         rafRef.current = requestAnimationFrame(tick);
