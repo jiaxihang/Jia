@@ -61,6 +61,38 @@ export function Hero({ onNavigate }: HeroProps) {
       {/* Seamless background transition gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cyan-50/20 dark:to-slate-900/30 pointer-events-none" />
 
+      {/* Aurora 极光层 */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div
+          className="aurora-band absolute -top-1/4 left-[-10%] w-[70%] h-[60%]"
+          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        />
+        <div
+          className="aurora-band aurora-band-alt absolute top-[-15%] right-[-15%] w-[65%] h-[55%]"
+          style={{ transform: `translateY(${scrollY * 0.1}px)`, animationDelay: "-6s" }}
+        />
+      </div>
+
+      {/* 星光点缀 */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {[
+          { top: "18%", left: "16%", size: "text-base", delay: "0s" },
+          { top: "26%", left: "78%", size: "text-xs", delay: "1.2s" },
+          { top: "62%", left: "12%", size: "text-sm", delay: "2.1s" },
+          { top: "70%", left: "84%", size: "text-base", delay: "0.6s" },
+          { top: "40%", left: "90%", size: "text-[10px]", delay: "1.8s" },
+          { top: "82%", left: "30%", size: "text-xs", delay: "2.6s" },
+        ].map((star, i) => (
+          <span
+            key={i}
+            className={`star-glint absolute ${star.size} text-cyan-400/60 dark:text-cyan-300/70 select-none`}
+            style={{ top: star.top, left: star.left, animationDelay: star.delay }}
+          >
+            ✦
+          </span>
+        ))}
+      </div>
+
       {/* Decorative elements with parallax */}
       <div
         className="absolute top-20 left-10 w-72 h-72 bg-cyan-200/18 rounded-full blur-3xl animate-gentle-pulse"
@@ -140,9 +172,27 @@ export function Hero({ onNavigate }: HeroProps) {
             了解更多
           </button>
         </div>
-
-
       </div>
+
+      {/* 下滑指示 */}
+      <motion.button
+        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cyan-500/60 dark:text-cyan-400/60 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors duration-300"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 1 }}
+        aria-label="向下滚动"
+      >
+        <span className="text-[10px] tracking-[0.3em] font-sans uppercase">Scroll</span>
+        <motion.span
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </motion.span>
+      </motion.button>
     </section>
   );
 }

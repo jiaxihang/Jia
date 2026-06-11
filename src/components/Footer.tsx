@@ -24,7 +24,7 @@ export function Footer({ onNavigate }: FooterProps) {
   }, []);
 
   return (
-    <footer className="relative py-16 px-6 bg-gradient-to-b from-transparent to-cyan-50/30">
+    <footer className="relative py-16 px-6 bg-gradient-to-b from-transparent to-cyan-50/30 dark:to-slate-900/40">
       {/* Ink wash decoration from bottom */}
       <motion.div
         className="absolute -top-48 left-0 right-0 h-64 pointer-events-none"

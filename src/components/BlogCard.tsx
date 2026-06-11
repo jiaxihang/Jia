@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { BlogPost } from "@/data/posts";
 
 interface BlogCardProps {
@@ -10,6 +10,16 @@ interface BlogCardProps {
 
 export function BlogCard({ post, index, onClick }: BlogCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLElement>(null);
+
+  // 鼠标跟随聚光：把光标位置写入 CSS 变量
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty("--spot-x", `${e.clientX - rect.left}px`);
+    card.style.setProperty("--spot-y", `${e.clientY - rect.top}px`);
+  };
 
   return (
     <motion.div
@@ -27,7 +37,9 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
       viewport={{ once: true, margin: "-50px" }}
     >
       <motion.article
+        ref={cardRef}
         onClick={onClick}
+        onMouseMove={handleMouseMove}
         className="group cursor-pointer relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-cyan-100/40 dark:border-slate-700/40 overflow-hidden transition-all duration-500 ease-out hover:border-cyan-200/60 dark:hover:border-slate-600/60 hover:-translate-y-0.5"
         whileHover={{
           y: -2,
@@ -37,6 +49,9 @@ export function BlogCard({ post, index, onClick }: BlogCardProps) {
         onHoverEnd={() => setIsHovered(false)}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
+        {/* 鼠标跟随聚光层 */}
+        <div className="card-spotlight absolute inset-0 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
         {/* Cover area with emoji */}
         <div className="relative h-48 bg-gradient-to-br from-cyan-50/90 via-teal-50/80 to-cyan-100/40 dark:from-slate-700/90 dark:via-slate-700/80 dark:to-slate-600/40 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 opacity-30">

@@ -3,6 +3,10 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ParticleBackground } from "@/components/ParticleBackground";
+import { CursorStardust } from "@/components/CursorStardust";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { BackToTop } from "@/components/BackToTop";
+import { EffectsPanel } from "@/components/EffectsPanel";
 import { NAV_ITEMS } from "@/config/site";
 
 export function Layout() {
@@ -42,6 +46,8 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-cyan-50/15 to-teal-50/10 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 font-sans relative transition-colors duration-500">
       <ParticleBackground />
+      <CursorStardust />
+      <ScrollProgress />
       <Header currentPage={activeNav} onNavigate={handleNavigate} />
 
       <main
@@ -53,6 +59,8 @@ export function Layout() {
       </main>
 
       <Footer onNavigate={handleNavigate} />
+      <BackToTop />
+      <EffectsPanel />
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function FeaturedQuote() {
             <div className="w-12 h-px bg-gradient-to-r from-cyan-300/50 to-transparent" />
           </div>
 
-          <blockquote className="font-serif text-xl md:text-2xl text-cyan-800/80 leading-relaxed mb-6">
+          <blockquote className="font-serif text-xl md:text-2xl text-cyan-800/80 dark:text-cyan-100/80 leading-relaxed mb-6">
             <span className="text-cyan-300 text-3xl leading-none">"</span>
             <br />
             每一行代码都是一首诗，
