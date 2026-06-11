@@ -8,7 +8,7 @@ import { ACCENTS } from "@/config/accents";
  * Header 上的星形按钮（主题切换旁），点开选择全站主题色
  */
 export function EffectsPanel() {
-  const { accent, setAccent } = useEffects();
+  const { accent, setAccent, density, setDensity } = useEffects();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -102,6 +102,23 @@ export function EffectsPanel() {
                   )}
                 </motion.button>
               ))}
+            </div>
+
+            {/* 繁星密度滑块 */}
+            <div className="mt-4 flex items-center gap-3">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-sans tracking-wider shrink-0">
+                繁星
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={density}
+                onChange={(e) => setDensity(Number(e.target.value))}
+                className="star-slider flex-1"
+                style={{ "--fill": `${density}%` } as React.CSSProperties}
+                aria-label="繁星密度"
+              />
             </div>
           </motion.div>
         )}

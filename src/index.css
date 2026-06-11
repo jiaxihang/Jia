@@ -917,6 +917,50 @@ html {
       transparent 70%);
 }
 
+/* 繁星密度滑块 */
+.star-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background:
+    linear-gradient(to right, var(--color-cyan-500), var(--color-teal-400)) 0 / var(--fill, 50%) 100% no-repeat,
+    rgba(var(--accent-rgb), 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.star-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color-cyan-500);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.star-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.7);
+}
+
+.star-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color-cyan-500);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  transition: transform 0.2s ease;
+}
+
+.star-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
 /* 页面转场的星河光束 */
 .page-sweep {
   position: fixed;

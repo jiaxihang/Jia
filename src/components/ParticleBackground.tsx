@@ -46,12 +46,14 @@ interface Constellation {
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
-  const { accent } = useEffects();
+  const { accent, density } = useEffects();
 
   const themeRef = useRef(theme);
   const accentRef = useRef(accent);
+  const densityRef = useRef(density);
   themeRef.current = theme;
   accentRef.current = accent;
+  densityRef.current = density;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -109,14 +111,31 @@ export function ParticleBackground() {
       };
     };
 
+    /** 繁星滑块 0~100 → 数量系数：0 寥寥数点，50 基准，100 漫天繁星 */
+    const targetStarCount = () => {
+      const d = densityRef.current;
+      const factor = d <= 50 ? 0.2 + (d / 50) * 0.8 : 1 + ((d - 50) / 50) * 1.4;
+      const base = Math.min(Math.floor((width * height) / 14000), 140);
+      return Math.min(Math.round(base * factor), 320);
+    };
+
     const init = () => {
       resize();
-      const count = Math.min(Math.floor((width * height) / 14000), 140);
-      stars = Array.from({ length: count }, makeStar);
+      stars = Array.from({ length: targetStarCount() }, makeStar);
       meteors = [];
       constellations = [];
       nextMeteorAt = time + 200 + Math.random() * 400;
       nextConstellationAt = time + 90 + Math.random() * 120;
+    };
+
+    /** 滑块变化时每帧平滑增减星星，避免整片重建的跳变 */
+    const adjustStarCount = () => {
+      const target = targetStarCount();
+      if (stars.length < target) {
+        for (let i = 0; i < Math.min(4, target - stars.length); i++) stars.push(makeStar());
+      } else if (stars.length > target) {
+        stars.splice(Math.max(target, stars.length - 4));
+      }
     };
 
     const spawnMeteor = () => {
@@ -305,6 +324,7 @@ export function ParticleBackground() {
       if (paused) return;
       time += 1;
       ctx.clearRect(0, 0, width, height);
+      adjustStarCount();
       drawStars();
       drawConstellations();
       drawMeteors();
