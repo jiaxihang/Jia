@@ -347,11 +347,10 @@ interface RevealState {
 
 export function ThemeToggle() {
     const { theme, toggleTheme } = useTheme();
-    const { settings } = useEffects();
+    const { accent: accentId } = useEffects();
     const btnRef = useRef<HTMLButtonElement>(null);
 
-    const accent = getAccent(settings.accent);
-    const isHighFx = settings.mode === "high";
+    const accent = getAccent(accentId);
     const rippleColor = theme === "dark" ? accent.bright : accent.rgb;
 
     const [reveal, setReveal] = useState<RevealState>({
@@ -375,8 +374,8 @@ export function ThemeToggle() {
         reveal.y,
         {
             color: rippleColor,
-            rings: isHighFx ? 5 : 2,
-            particles: isHighFx,
+            rings: 5,
+            particles: true,
         },
         handleRadiusUpdate
     );
@@ -411,8 +410,8 @@ export function ThemeToggle() {
             root.style.setProperty("--vt-max-r", `${maxR}px`);
             root.style.setProperty("--vt-duration", `${duration}s`);
 
-            // 高功效：水纹位移；低功耗：轻量光晕
-            if (isHighFx && !reducedMotion) {
+            // 水纹位移；减弱动效时退化为轻量光晕
+            if (!reducedMotion) {
                 runWater(duration * 1000 * 0.85);
             } else {
                 root.classList.add("vt-lite");
@@ -515,7 +514,7 @@ export function ThemeToggle() {
                     </>
                 )}
 
-                {!reveal.active && isHighFx && (
+                {!reveal.active && (
                     <motion.div
                         className="absolute inset-0 rounded-full bg-cyan-400/10 dark:bg-cyan-500/5"
                         animate={{ scale: [1, 1.2, 1], opacity: [0, 0.3, 0] }}

@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useEffects, type StarDensity } from "@/contexts/EffectsContext";
+import { useEffects } from "@/contexts/EffectsContext";
 import { getAccent } from "@/config/accents";
 
 /**
- * 星空粒子引擎 v2
- * - 高功效：三层景深 + 视差 + 流星 + 星座连线 + 星芒光晕
- * - 低功耗：寥寥数点，优雅漂浮，几乎不耗 GPU
- * - 配色实时跟随明暗主题与主题色（无需重建场景）
- * - 渲染循环常驻：设置变化不会中断动画；标签页隐藏时暂停
+ * 星空粒子引擎
+ * - 三层景深星星 + 鼠标视差，呼吸式闪烁，亮星带十字星芒
+ * - 流星常驻，随机划过夜空
+ * - 周期性星座连线：星空中不时有星座浮现、停留、隐去，循环不息
+ * - 配色实时跟随明暗主题与主题色；标签页隐藏时暂停
  */
 
 interface Star {
@@ -21,7 +21,7 @@ interface Star {
   twinklePhase: number;
   vx: number;
   vy: number;
-  colorIdx: number; // 在当前配色板中的下标（绘制时实时解析颜色）
+  colorIdx: number;
   // 每帧计算的显示坐标（含视差），星座连线复用，保证线星合一
   dx: number;
   dy: number;
@@ -37,29 +37,21 @@ interface Meteor {
   maxLife: number;
 }
 
-const DENSITY_DIVISOR: Record<StarDensity, number> = {
-  low: 26000,
-  medium: 14000,
-  high: 8000,
-};
-
-const DENSITY_CAP: Record<StarDensity, number> = {
-  low: 70,
-  medium: 140,
-  high: 240,
-};
+interface Constellation {
+  edges: [number, number][]; // 星下标对
+  birth: number;
+  life: number;
+}
 
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
-  const { settings } = useEffects();
+  const { accent } = useEffects();
 
   const themeRef = useRef(theme);
-  const settingsRef = useRef(settings);
+  const accentRef = useRef(accent);
   themeRef.current = theme;
-  settingsRef.current = settings;
-
-  const isLowPower = settings.mode === "low";
+  accentRef.current = accent;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -68,23 +60,24 @@ export function ParticleBackground() {
     if (!ctx) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const lowPower = settingsRef.current.mode === "low";
 
     let animationId = 0;
     let stars: Star[] = [];
     let meteors: Meteor[] = [];
+    let constellations: Constellation[] = [];
     let width = 0;
     let height = 0;
     let dpr = 1;
     let time = 0;
     let nextMeteorAt = 0;
+    let nextConstellationAt = 0;
     let paused = false;
 
     const mouse = { x: -9999, y: -9999, px: 0, py: 0 };
 
     const palette = () => {
-      const accent = getAccent(settingsRef.current.accent);
-      return themeRef.current === "dark" ? accent.starsDark : accent.starsLight;
+      const a = getAccent(accentRef.current);
+      return themeRef.current === "dark" ? a.starsDark : a.starsLight;
     };
 
     const resize = () => {
@@ -104,14 +97,12 @@ export function ParticleBackground() {
         x: Math.random() * width,
         y: Math.random() * height,
         z,
-        size: lowPower ? 0.3 + z * 1.0 + Math.random() * 0.3 : 0.4 + z * 1.8 + Math.random() * 0.5,
-        baseAlpha: lowPower
-          ? 0.12 + z * 0.3 + Math.random() * 0.1
-          : 0.15 + z * 0.45 + Math.random() * 0.15,
-        twinkleSpeed: (lowPower ? 0.25 : 0.4) + Math.random() * (lowPower ? 0.6 : 1.4),
+        size: 0.4 + z * 1.8 + Math.random() * 0.5,
+        baseAlpha: 0.15 + z * 0.45 + Math.random() * 0.15,
+        twinkleSpeed: 0.4 + Math.random() * 1.4,
         twinklePhase: Math.random() * Math.PI * 2,
-        vx: (Math.random() - 0.5) * (lowPower ? 0.04 : 0.08) * (0.4 + z),
-        vy: (Math.random() - 0.5) * (lowPower ? 0.04 : 0.08) * (0.4 + z),
+        vx: (Math.random() - 0.5) * 0.08 * (0.4 + z),
+        vy: (Math.random() - 0.5) * 0.08 * (0.4 + z),
         colorIdx: Math.floor(Math.random() * 4),
         dx: 0,
         dy: 0,
@@ -120,16 +111,12 @@ export function ParticleBackground() {
 
     const init = () => {
       resize();
-      const density = settingsRef.current.density;
-      let count = Math.min(
-        Math.floor((width * height) / DENSITY_DIVISOR[density]),
-        DENSITY_CAP[density]
-      );
-      // 低功耗：寥寥数点更优雅
-      if (lowPower) count = Math.min(Math.floor(count / 3), 36);
+      const count = Math.min(Math.floor((width * height) / 14000), 140);
       stars = Array.from({ length: count }, makeStar);
       meteors = [];
+      constellations = [];
       nextMeteorAt = time + 200 + Math.random() * 400;
+      nextConstellationAt = time + 90 + Math.random() * 120;
     };
 
     const spawnMeteor = () => {
@@ -148,10 +135,34 @@ export function ParticleBackground() {
       });
     };
 
+    /** 以一颗随机亮星为锚点，把附近的星连成一组星座 */
+    const spawnConstellation = () => {
+      if (stars.length < 6) return;
+      const anchorIdx = Math.floor(Math.random() * stars.length);
+      const anchor = stars[anchorIdx];
+      const neighbors = stars
+        .map((s, i) => ({ i, d: (s.x - anchor.x) ** 2 + (s.y - anchor.y) ** 2 }))
+        .filter((o) => o.i !== anchorIdx && o.d < 240 * 240)
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 4 + Math.floor(Math.random() * 3));
+      if (neighbors.length < 2) return;
+
+      // 锚点出发依次串联近邻，偶尔闭合成环，形状更像星座
+      const chain = [anchorIdx, ...neighbors.map((o) => o.i)];
+      const edges: [number, number][] = [];
+      for (let k = 0; k < chain.length - 1; k++) edges.push([chain[k], chain[k + 1]]);
+      if (chain.length > 4 && Math.random() > 0.5) edges.push([chain[chain.length - 1], anchorIdx]);
+
+      constellations.push({
+        edges,
+        birth: time,
+        life: 380 + Math.random() * 260, // 约 6~10 秒
+      });
+    };
+
     const drawStars = () => {
       const colors = palette();
       const isDark = themeRef.current === "dark";
-      const parallax = lowPower ? 8 : 30;
 
       // 鼠标视差目标（平滑跟随）
       const targetPx = mouse.x > -999 ? (mouse.x - width / 2) / width : 0;
@@ -169,17 +180,14 @@ export function ParticleBackground() {
 
         const twinkle = reducedMotion
           ? 1
-          : (lowPower ? 0.78 : 0.65) +
-            (lowPower ? 0.22 : 0.35) * Math.sin(time * 0.02 * s.twinkleSpeed + s.twinklePhase);
+          : 0.65 + 0.35 * Math.sin(time * 0.02 * s.twinkleSpeed + s.twinklePhase);
         const alpha = s.baseAlpha * twinkle;
         const color = colors[s.colorIdx % colors.length];
 
-        // 显示坐标（含视差），缓存给星座连线
-        s.dx = s.x - mouse.px * parallax * s.z;
-        s.dy = s.y - mouse.py * parallax * s.z;
+        s.dx = s.x - mouse.px * 30 * s.z;
+        s.dy = s.y - mouse.py * 30 * s.z;
 
-        // 高功效：近处亮星加光晕
-        if (!lowPower && s.z > 0.65 && isDark) {
+        if (s.z > 0.65 && isDark) {
           ctx.beginPath();
           ctx.arc(s.dx, s.dy, s.size * 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${color},${alpha * 0.12})`;
@@ -191,8 +199,7 @@ export function ParticleBackground() {
         ctx.fillStyle = `rgba(${color},${alpha})`;
         ctx.fill();
 
-        // 高功效：最亮的星画十字星芒
-        if (!lowPower && s.z > 0.85 && twinkle > 0.9) {
+        if (s.z > 0.85 && twinkle > 0.9) {
           const ray = s.size * 4 * twinkle;
           ctx.strokeStyle = `rgba(${color},${alpha * 0.35})`;
           ctx.lineWidth = 0.6;
@@ -206,60 +213,57 @@ export function ParticleBackground() {
       }
     };
 
-    const drawConstellation = () => {
-      if (lowPower || !settingsRef.current.constellation || mouse.x < -999) return;
-      const accent = getAccent(settingsRef.current.accent);
-      const lineColor = themeRef.current === "dark" ? accent.bright : accent.rgb;
-      const radius = 170;
-      const near: Star[] = [];
-
-      // 用显示坐标（含视差）判定与连线，确保线始终贴着星
-      for (const s of stars) {
-        const dx = s.dx - mouse.x;
-        const dy = s.dy - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < radius) {
-          near.push(s);
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(${lineColor},${0.16 * (1 - dist / radius)})`;
-          ctx.lineWidth = 0.5;
-          ctx.moveTo(s.dx, s.dy);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-        }
+    /** 周期性星座：渐入—停留—渐出，错峰生灭，星空中始终有星座流转 */
+    const drawConstellations = () => {
+      if (constellations.length < 2 && time >= nextConstellationAt) {
+        spawnConstellation();
+        nextConstellationAt = time + 200 + Math.random() * 280;
       }
+      constellations = constellations.filter((c) => time - c.birth < c.life);
+      if (constellations.length === 0) return;
 
-      for (let i = 0; i < near.length; i++) {
-        for (let j = i + 1; j < near.length; j++) {
-          const dx = near[i].dx - near[j].dx;
-          const dy = near[i].dy - near[j].dy;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 110) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${lineColor},${0.12 * (1 - dist / 110)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(near[i].dx, near[i].dy);
-            ctx.lineTo(near[j].dx, near[j].dy);
-            ctx.stroke();
-          }
+      const a = getAccent(accentRef.current);
+      const lineColor = themeRef.current === "dark" ? a.bright : a.rgb;
+      const baseAlpha = themeRef.current === "dark" ? 0.3 : 0.22;
+
+      for (const c of constellations) {
+        const t = (time - c.birth) / c.life;
+        // 渐入 18% — 保持 — 渐出 25%
+        const envelope = Math.max(0, Math.min(1, t / 0.18, (1 - t) / 0.25));
+        const alpha = baseAlpha * envelope;
+        if (alpha <= 0.004) continue;
+
+        for (const [i, j] of c.edges) {
+          const s1 = stars[i];
+          const s2 = stars[j];
+          if (!s1 || !s2) continue;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(${lineColor},${alpha})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(s1.dx, s1.dy);
+          ctx.lineTo(s2.dx, s2.dy);
+          ctx.stroke();
+
+          // 节点微光，让星座成员略亮于背景
+          ctx.beginPath();
+          ctx.arc(s1.dx, s1.dy, s1.size * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${lineColor},${alpha * 0.35})`;
+          ctx.fill();
         }
       }
     };
 
     const drawMeteors = () => {
-      if (lowPower || !settingsRef.current.meteors || reducedMotion) {
-        meteors = [];
-        return;
-      }
+      if (reducedMotion) return;
       if (time >= nextMeteorAt) {
         spawnMeteor();
         nextMeteorAt = time + 400 + Math.random() * 900;
       }
 
-      const accent = getAccent(settingsRef.current.accent);
+      const a = getAccent(accentRef.current);
       const isDark = themeRef.current === "dark";
-      const head = isDark ? "235,250,255" : accent.rgb;
-      const tail = isDark ? accent.bright : accent.rgb2;
+      const head = isDark ? "235,250,255" : a.rgb;
+      const tail = isDark ? a.bright : a.rgb2;
 
       meteors = meteors.filter(
         (m) => m.life > 0 && m.x > -200 && m.x < width + 200 && m.y < height + 200
@@ -270,7 +274,7 @@ export function ParticleBackground() {
         m.life -= 1;
 
         const lifeRatio = m.life / m.maxLife;
-        const fade = Math.sin(Math.min(1, lifeRatio) * Math.PI); // 渐入渐出
+        const fade = Math.sin(Math.min(1, lifeRatio) * Math.PI);
         const speedNorm = Math.sqrt(m.vx * m.vx + m.vy * m.vy);
         const tx = m.x - (m.vx / speedNorm) * m.len;
         const ty = m.y - (m.vy / speedNorm) * m.len;
@@ -295,14 +299,14 @@ export function ParticleBackground() {
       }
     };
 
-    // 渲染循环常驻：除标签页隐藏外不停止，保证特效持续
+    // 渲染循环常驻，仅标签页隐藏时暂停
     const animate = () => {
       animationId = requestAnimationFrame(animate);
       if (paused) return;
       time += 1;
       ctx.clearRect(0, 0, width, height);
       drawStars();
-      drawConstellation();
+      drawConstellations();
       drawMeteors();
     };
 
@@ -333,14 +337,13 @@ export function ParticleBackground() {
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-    // 仅密度/模式变化时重建场景；主题与主题色在绘制时实时解析
-  }, [settings.density, settings.mode]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-700"
-      style={{ opacity: theme === "dark" ? (isLowPower ? 0.6 : 0.85) : (isLowPower ? 0.4 : 0.55) }}
+      style={{ opacity: theme === "dark" ? 0.85 : 0.55 }}
       aria-hidden="true"
     />
   );

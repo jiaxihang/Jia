@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { SITE } from "@/config/site";
-import { useEffects } from "@/contexts/EffectsContext";
 
 interface HeroProps {
   onNavigate: (page: string) => void;
@@ -13,8 +12,6 @@ export function Hero({ onNavigate }: HeroProps) {
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
   const fullText = SITE.tagline;
-  const { settings } = useEffects();
-  const isHighFx = settings.mode === "high";
 
   useEffect(() => {
     let index = 0;
@@ -64,41 +61,37 @@ export function Hero({ onNavigate }: HeroProps) {
       {/* Seamless background transition gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cyan-50/20 dark:to-slate-900/30 pointer-events-none" />
 
-      {/* Aurora 极光层（高功效） */}
-      {isHighFx && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div
-            className="aurora-band absolute -top-1/4 left-[-10%] w-[70%] h-[60%]"
-            style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-          />
-          <div
-            className="aurora-band aurora-band-alt absolute top-[-15%] right-[-15%] w-[65%] h-[55%]"
-            style={{ transform: `translateY(${scrollY * 0.1}px)`, animationDelay: "-6s" }}
-          />
-        </div>
-      )}
+      {/* Aurora 极光层 */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div
+          className="aurora-band absolute -top-1/4 left-[-10%] w-[70%] h-[60%]"
+          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        />
+        <div
+          className="aurora-band aurora-band-alt absolute top-[-15%] right-[-15%] w-[65%] h-[55%]"
+          style={{ transform: `translateY(${scrollY * 0.1}px)`, animationDelay: "-6s" }}
+        />
+      </div>
 
-      {/* 星光点缀（高功效） */}
-      {isHighFx && (
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          {[
-            { top: "18%", left: "16%", size: "text-base", delay: "0s" },
-            { top: "26%", left: "78%", size: "text-xs", delay: "1.2s" },
-            { top: "62%", left: "12%", size: "text-sm", delay: "2.1s" },
-            { top: "70%", left: "84%", size: "text-base", delay: "0.6s" },
-            { top: "40%", left: "90%", size: "text-[10px]", delay: "1.8s" },
-            { top: "82%", left: "30%", size: "text-xs", delay: "2.6s" },
-          ].map((star, i) => (
-            <span
-              key={i}
-              className={`star-glint absolute ${star.size} text-cyan-400/60 dark:text-cyan-300/70 select-none`}
-              style={{ top: star.top, left: star.left, animationDelay: star.delay }}
-            >
-              ✦
-            </span>
-          ))}
-        </div>
-      )}
+      {/* 星光点缀 */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {[
+          { top: "18%", left: "16%", size: "text-base", delay: "0s" },
+          { top: "26%", left: "78%", size: "text-xs", delay: "1.2s" },
+          { top: "62%", left: "12%", size: "text-sm", delay: "2.1s" },
+          { top: "70%", left: "84%", size: "text-base", delay: "0.6s" },
+          { top: "40%", left: "90%", size: "text-[10px]", delay: "1.8s" },
+          { top: "82%", left: "30%", size: "text-xs", delay: "2.6s" },
+        ].map((star, i) => (
+          <span
+            key={i}
+            className={`star-glint absolute ${star.size} text-cyan-400/60 dark:text-cyan-300/70 select-none`}
+            style={{ top: star.top, left: star.left, animationDelay: star.delay }}
+          >
+            ✦
+          </span>
+        ))}
+      </div>
 
       {/* Decorative elements with parallax */}
       <div

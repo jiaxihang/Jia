@@ -1,74 +1,42 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { AccentId } from "@/config/accents";
+import { ACCENTS, type AccentId } from "@/config/accents";
 
 /**
- * 全局特效设置
- * 高功效/低功耗模式、主题色、星空密度、流星、星座连线、光标星尘
- * 全部可自定义并持久化到 localStorage
+ * 全局特效设置：仅主题色可调，持久化到 localStorage
+ * 特效本身全量常驻（星空、流星、周期性星座连线）
  */
 
-export type StarDensity = "low" | "medium" | "high";
-export type EffectsMode = "high" | "low";
-
-export interface EffectsSettings {
-  mode: EffectsMode;
-  accent: AccentId;
-  density: StarDensity;
-  meteors: boolean;
-  constellation: boolean;
-  stardust: boolean;
-}
-
 interface EffectsContextType {
-  settings: EffectsSettings;
-  updateSettings: (patch: Partial<EffectsSettings>) => void;
-  resetSettings: () => void;
+  accent: AccentId;
+  setAccent: (accent: AccentId) => void;
 }
-
-const DEFAULT_SETTINGS: EffectsSettings = {
-  mode: "high",
-  accent: "cyan",
-  density: "medium",
-  meteors: true,
-  constellation: true,
-  stardust: true,
-};
 
 const STORAGE_KEY = "blog-effects";
 
 const EffectsContext = createContext<EffectsContextType | null>(null);
 
-function loadSettings(): EffectsSettings {
-  if (typeof window === "undefined") return DEFAULT_SETTINGS;
+function loadAccent(): AccentId {
+  if (typeof window === "undefined") return "cyan";
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return DEFAULT_SETTINGS;
-    const parsed = JSON.parse(stored) as Partial<EffectsSettings>;
-    return { ...DEFAULT_SETTINGS, ...parsed };
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}") as { accent?: string };
+    if (ACCENTS.some((a) => a.id === stored.accent)) return stored.accent as AccentId;
   } catch {
-    return DEFAULT_SETTINGS;
+    // ignore
   }
+  return "cyan";
 }
 
 export function EffectsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<EffectsSettings>(loadSettings);
+  const [accent, setAccent] = useState<AccentId>(loadAccent);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-  }, [settings]);
-
-  // 主题色通过 data-accent 让 CSS 覆盖整站色板
-  useEffect(() => {
-    document.documentElement.dataset.accent = settings.accent;
-  }, [settings.accent]);
-
-  const updateSettings = (patch: Partial<EffectsSettings>) =>
-    setSettings((s) => ({ ...s, ...patch }));
-
-  const resetSettings = () => setSettings(DEFAULT_SETTINGS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ accent }));
+    // 主题色通过 data-accent 让 CSS 覆盖整站色板
+    document.documentElement.dataset.accent = accent;
+  }, [accent]);
 
   return (
-    <EffectsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+    <EffectsContext.Provider value={{ accent, setAccent }}>
       {children}
     </EffectsContext.Provider>
   );
