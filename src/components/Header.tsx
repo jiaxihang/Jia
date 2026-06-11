@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { NAV_ITEMS, SITE } from "@/config/site";
 import { ThemeToggle } from "./ThemeToggle";
+import { EffectsPanel } from "./EffectsPanel";
 
 interface HeaderProps {
   currentPage: string;
@@ -63,11 +64,13 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
               </motion.button>
             ))}
           </nav>
+          <EffectsPanel />
           <ThemeToggle />
         </div>
 
-        {/* Mobile: theme toggle + menu button */}
+        {/* Mobile: effects + theme toggle + menu button */}
         <div className="md:hidden flex items-center gap-2">
+          <EffectsPanel />
           <ThemeToggle />
           <button
             onClick={() => setMenuOpen(!menuOpen)}

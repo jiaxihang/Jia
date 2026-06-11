@@ -1,18 +1,54 @@
-import { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { CursorStardust } from "@/components/CursorStardust";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { BackToTop } from "@/components/BackToTop";
-import { EffectsPanel } from "@/components/EffectsPanel";
 import { NAV_ITEMS } from "@/config/site";
+import { useEffects } from "@/contexts/EffectsContext";
+
+/** 页面转场：高功效 = 模糊缩放浮动，低功耗 = 轻快淡入淡出 */
+const pageVariants = {
+  high: {
+    initial: { opacity: 0, y: 28, scale: 0.99, filter: "blur(10px)" },
+    enter: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      scale: 0.995,
+      filter: "blur(8px)",
+      transition: { duration: 0.28, ease: [0.4, 0, 1, 1] as const },
+    },
+  },
+  low: {
+    initial: { opacity: 0 },
+    enter: { opacity: 1, transition: { duration: 0.25 } },
+    exit: { opacity: 0, transition: { duration: 0.15 } },
+  },
+};
 
 export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { settings } = useEffects();
+  const isHighFx = settings.mode === "high";
+
+  const handleNavigate = (page: string) => {
+    const item = NAV_ITEMS.find((n) => n.id === page);
+    navigate(item?.path ?? "/");
+  };
+
+  // useOutlet 抓取当前路由元素：转场期间旧页面保持原样退场
+  const outlet = useOutlet({ onNavigate: handleNavigate });
 
   const pathToNavId = (path: string) => {
     if (path === "/" || path === "") return "home";
@@ -23,17 +59,7 @@ export function Layout() {
   };
 
   const activeNav = pathToNavId(location.pathname);
-
-  const handleNavigate = (page: string) => {
-    setIsTransitioning(true);
-    const item = NAV_ITEMS.find((n) => n.id === page);
-    const path = item?.path ?? "/";
-    setTimeout(() => {
-      navigate(path);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => setIsTransitioning(false), 100);
-    }, 300);
-  };
+  const variants = isHighFx ? pageVariants.high : pageVariants.low;
 
   useEffect(() => {
     document.body.style.opacity = "0";
@@ -50,17 +76,36 @@ export function Layout() {
       <ScrollProgress />
       <Header currentPage={activeNav} onNavigate={handleNavigate} />
 
-      <main
-        className={`relative z-10 transition-all duration-300 ${
-          isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-        }`}
+      {/* 高功效模式：换页时一道星河光束扫过 */}
+      {isHighFx && (
+        <motion.div
+          key={`sweep-${location.pathname}`}
+          className="page-sweep"
+          initial={{ x: "-130%", opacity: 0 }}
+          animate={{ x: "350%", opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 0.65, ease: "easeInOut" }}
+          aria-hidden="true"
+        />
+      )}
+
+      <AnimatePresence
+        mode="wait"
+        onExitComplete={() => window.scrollTo({ top: 0, behavior: "instant" })}
       >
-        <Outlet context={{ onNavigate: handleNavigate }} />
-      </main>
+        <motion.main
+          key={location.pathname}
+          className="relative z-10"
+          variants={variants}
+          initial="initial"
+          animate="enter"
+          exit="exit"
+        >
+          {outlet}
+        </motion.main>
+      </AnimatePresence>
 
       <Footer onNavigate={handleNavigate} />
       <BackToTop />
-      <EffectsPanel />
     </div>
   );
 }
