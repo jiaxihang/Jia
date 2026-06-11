@@ -2,6 +2,8 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useEffects } from "@/contexts/EffectsContext";
+import { getAccent } from "@/config/accents";
 
 declare global {
     interface Document {
@@ -62,10 +64,17 @@ function calcDuration(maxR: number) {
     return maxR / (LEAD_SPEED * 60);
 }
 
+interface RippleOptions {
+    color: string; // "r,g,b"
+    rings: number;
+    particles: boolean;
+}
+
 function useRippleCanvas(
     active: boolean,
     ox: number,
     oy: number,
+    options: RippleOptions,
     onRadiusUpdate?: (r: number) => void
 ) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -73,6 +82,8 @@ function useRippleCanvas(
     const particlesRef = useRef<Particle[]>([]);
     const frameRef = useRef(0);
     const lastSpawnR = useRef(0);
+    const optionsRef = useRef(options);
+    optionsRef.current = options;
 
     const spawnOnRing = useCallback(
         (cx: number, cy: number, r: number, count: number) => {
@@ -114,8 +125,9 @@ function useRippleCanvas(
         cvs.height = window.innerHeight;
 
         const maxR = calcMaxRadius(ox, oy);
+        const { color, rings, particles } = optionsRef.current;
 
-        ringsRef.current = Array.from({ length: 5 }, (_, i) => ({
+        ringsRef.current = Array.from({ length: rings }, (_, i) => ({
             radius: 0,
             maxRadius: maxR,
             baseOpacity: 0.5 - i * 0.06,
@@ -154,26 +166,31 @@ function useRippleCanvas(
 
                 ctx.beginPath();
                 ctx.arc(ox, oy, ring.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(6,182,212,${alpha})`;
+                ctx.strokeStyle = `rgba(${color},${alpha})`;
                 ctx.lineWidth = ring.lineWidth;
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.arc(ox, oy, Math.max(0, ring.radius - 5), 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(6,182,212,${alpha * 0.3})`;
+                ctx.strokeStyle = `rgba(${color},${alpha * 0.3})`;
                 ctx.lineWidth = ring.lineWidth * 3;
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.arc(ox, oy, ring.radius + 4, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(6,182,212,${alpha * 0.15})`;
+                ctx.strokeStyle = `rgba(${color},${alpha * 0.15})`;
                 ctx.lineWidth = ring.lineWidth * 5;
                 ctx.stroke();
             });
 
             onRadiusUpdate?.(leadR);
 
-            if (leadR > 0 && leadR < maxR && leadR - lastSpawnR.current > 25) {
+            if (
+                particles &&
+                leadR > 0 &&
+                leadR < maxR &&
+                leadR - lastSpawnR.current > 25
+            ) {
                 spawnOnRing(ox, oy, leadR, 6 + Math.floor(Math.random() * 10));
                 lastSpawnR.current = leadR;
             }
@@ -190,12 +207,12 @@ function useRippleCanvas(
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(6,182,212,${a})`;
+                ctx.fillStyle = `rgba(${color},${a})`;
                 ctx.fill();
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(6,182,212,${a * 0.12})`;
+                ctx.fillStyle = `rgba(${color},${a * 0.12})`;
                 ctx.fill();
             });
 
@@ -218,7 +235,7 @@ function useRippleCanvas(
                         ctx.beginPath();
                         ctx.moveTo(vis[i].x, vis[i].y);
                         ctx.lineTo(vis[j].x, vis[j].y);
-                        ctx.strokeStyle = `rgba(6,182,212,${la})`;
+                        ctx.strokeStyle = `rgba(${color},${la})`;
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
@@ -240,6 +257,82 @@ function useRippleCanvas(
 }
 
 /* ═══════════════════════════════════════════
+   水纹位移滤镜
+   高功效模式下，View Transition 的新画面经过
+   feDisplacementMap 扭曲——文字与版面随涟漪波动，
+   随涟漪推向尽头时扭曲幅度归零，水面归于平静
+   ═══════════════════════════════════════════ */
+
+function useWaterRipple() {
+    const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
+    const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
+    const rafRef = useRef(0);
+
+    const run = useCallback((durationMs: number) => {
+        const turb = turbulenceRef.current;
+        const disp = displacementRef.current;
+        if (!turb || !disp) return;
+
+        document.documentElement.classList.add("vt-water");
+
+        const start = performance.now();
+        const maxScale = 32;
+
+        const tick = (now: number) => {
+            const t = Math.min(1, (now - start) / durationMs);
+            // easeOutCubic：开始波动剧烈，推向尽头渐归平静
+            const ease = 1 - Math.pow(1 - t, 3);
+            const scale = maxScale * (1 - ease);
+            disp.setAttribute("scale", scale.toFixed(2));
+            // 噪声频率微漂移，让水纹"流动"
+            const bf = 0.012 + 0.006 * Math.sin(t * Math.PI * 3);
+            turb.setAttribute("baseFrequency", `${bf.toFixed(4)} ${(bf * 1.6).toFixed(4)}`);
+
+            if (t < 1) {
+                rafRef.current = requestAnimationFrame(tick);
+            } else {
+                disp.setAttribute("scale", "0");
+                document.documentElement.classList.remove("vt-water");
+            }
+        };
+        rafRef.current = requestAnimationFrame(tick);
+    }, []);
+
+    const cancel = useCallback(() => {
+        cancelAnimationFrame(rafRef.current);
+        displacementRef.current?.setAttribute("scale", "0");
+        document.documentElement.classList.remove("vt-water");
+    }, []);
+
+    useEffect(() => cancel, [cancel]);
+
+    const filterSvg = (
+        <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+            <filter id="theme-water" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence
+                    ref={turbulenceRef}
+                    type="fractalNoise"
+                    baseFrequency="0.012 0.019"
+                    numOctaves="2"
+                    seed="7"
+                    result="noise"
+                />
+                <feDisplacementMap
+                    ref={displacementRef}
+                    in="SourceGraphic"
+                    in2="noise"
+                    scale="0"
+                    xChannelSelector="R"
+                    yChannelSelector="G"
+                />
+            </filter>
+        </svg>
+    );
+
+    return { filterSvg, run, cancel };
+}
+
+/* ═══════════════════════════════════════════
    ThemeToggle
    ═══════════════════════════════════════════ */
 
@@ -252,7 +345,12 @@ interface RevealState {
 
 export function ThemeToggle() {
     const { theme, toggleTheme } = useTheme();
+    const { settings } = useEffects();
     const btnRef = useRef<HTMLButtonElement>(null);
+
+    const accent = getAccent(settings.accent);
+    const isHighFx = settings.mode === "high";
+    const rippleColor = theme === "dark" ? accent.bright : accent.rgb;
 
     const [reveal, setReveal] = useState<RevealState>({
         active: false,
@@ -262,8 +360,10 @@ export function ThemeToggle() {
     });
     const [maskR, setMaskR] = useState(0);
 
-    // ★ 控制 Canvas 淡出，防止颜色突变
+    // 控制 Canvas 淡出，防止颜色突变
     const [canvasFading, setCanvasFading] = useState(false);
+
+    const { filterSvg, run: runWater, cancel: cancelWater } = useWaterRipple();
 
     const handleRadiusUpdate = useCallback((r: number) => setMaskR(r), []);
 
@@ -271,14 +371,16 @@ export function ThemeToggle() {
         reveal.active,
         reveal.x,
         reveal.y,
+        {
+            color: rippleColor,
+            rings: isHighFx ? 5 : 2,
+            particles: isHighFx,
+        },
         handleRadiusUpdate
     );
 
     const cleanUp = useCallback(() => {
-        // 先触发 Canvas 淡出
         setCanvasFading(true);
-
-        // 等淡出动画完成后再真正移除
         setTimeout(() => {
             setReveal((s) => ({ ...s, active: false }));
             setMaskR(0);
@@ -298,6 +400,7 @@ export function ThemeToggle() {
         const duration = calcDuration(maxR);
 
         const supportsVT = "startViewTransition" in document;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         if (supportsVT) {
             const root = document.documentElement;
@@ -305,6 +408,13 @@ export function ThemeToggle() {
             root.style.setProperty("--vt-ry", `${y}px`);
             root.style.setProperty("--vt-max-r", `${maxR}px`);
             root.style.setProperty("--vt-duration", `${duration}s`);
+
+            // 高功效：水纹位移；低功耗：轻量光晕
+            if (isHighFx && !reducedMotion) {
+                runWater(duration * 1000 * 0.85);
+            } else {
+                root.classList.add("vt-lite");
+            }
 
             setReveal({ active: true, x, y, oldTheme });
             setCanvasFading(false);
@@ -316,6 +426,8 @@ export function ThemeToggle() {
             });
 
             transition.finished.then(() => {
+                cancelWater();
+                root.classList.remove("vt-lite");
                 cleanUp();
             });
         } else {
@@ -342,6 +454,8 @@ export function ThemeToggle() {
 
     return (
         <>
+            {filterSvg}
+
             {showFallback && (
                 <div
                     className="fixed inset-0 pointer-events-none"
@@ -356,7 +470,7 @@ export function ThemeToggle() {
                 />
             )}
 
-            {/* ★ Canvas：添加 opacity transition，淡出而非突然消失 */}
+            {/* Canvas：opacity transition 淡出，避免突然消失 */}
             {reveal.active && (
                 <canvas
                     ref={canvasRef}
@@ -399,7 +513,7 @@ export function ThemeToggle() {
                     </>
                 )}
 
-                {!reveal.active && (
+                {!reveal.active && isHighFx && (
                     <motion.div
                         className="absolute inset-0 rounded-full bg-cyan-400/10 dark:bg-cyan-500/5"
                         animate={{ scale: [1, 1.2, 1], opacity: [0, 0.3, 0] }}
